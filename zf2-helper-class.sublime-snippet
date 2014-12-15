@@ -17,7 +17,7 @@ class ${2:_SUBPACKAGE_}Helper extends AbstractHelper {
 
 public function Read${2}(\$_this,\$opcional=array())
 {
-     \$repository=\$this->em->getRepository('${1}\Entity\${2}')->findBy(array('state'=>'0'));
+     \$repository=\$this->em->getRepository('${1}\Entity\\${2}')->findBy(array('state'=>'0'));
         if(\$repository):?>
 
          <?php   endif;
