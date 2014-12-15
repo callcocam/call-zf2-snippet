@@ -1,0 +1,54 @@
+<snippet>
+    <content><![CDATA[
+<?php
+namespace ${1:_PACKAGE_}\Controller;
+
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+
+class ${2:_SUBPACKAGE_}Controller extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity = '${1}\Entity\\${2}';
+        \$this->service = '${1}\Service\\${2}Service';
+        \$this->form = '${1}\Form\\${2}Form';
+        \$this->controller = "${3:rota}";
+        \$this->route = "${3}";
+        \$this->templete="/call-${3}/index/index";
+        \$this->action=array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+        //setamos o templete
+        \$this->templete="/call-${3}/index/index";
+        return parent::listarAction();
+    }
+    public function inserirAction()
+    {   \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-${3}/index/editar";
+        return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-${3}/index/editar";
+        return parent::editarAction();
+    }
+    public function listadirAction()
+    {
+        \$view=new ViewModel(array('dir' => \$this->route,'contas'=>\$this->SigaContas(),'usuario'=>\$this->user));
+        //setamos o templete
+        \$view->setTemplate("/call-midia/index/listadir");
+        \$view->setTerminal(true);
+        return \$view;
+
+    }
+}
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-controller</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>
