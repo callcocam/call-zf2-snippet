@@ -1,0 +1,99 @@
+<snippet>
+    <content><![CDATA[
+<?php
+/*
+ * To change this template, choose Tools | Templates and open the template in the editor.
+ */
+
+/**
+ * Description of ${1:_SUBPACKAGE_}Filter
+ *
+ * @author Administrador
+ */
+namespace ${2:_PACKAGE_}\Form;
+
+use Zend\InputFilter\InputFilter;
+use Zend\Validator\NotEmpty;
+use Zend\Validator\EmailAddress;
+use Zend\Validator\Identical;
+use Zend\Filter\StripTags;
+use Zend\Filter\StringTrim;
+
+class ${1}Filter extends InputFilter {
+    public function __construct() {
+        \$inputFilter = new InputFilter ();
+        \$emptyfilter = new NotEmpty ();
+        \$emailfilter = new EmailAddress ();
+        \$identca = new Identical ();
+        \$emptyfilter->setMessage ( "Campo Obrigatorio.", NotEmpty::IS_EMPTY );
+        \$emailfilter->setMessage ( "O Formato Do Email Não E valido", EmailAddress::INVALID_FORMAT );
+
+        \$identca->setToken ( "password" );
+        \$identca->setMessage ( "O Campo Repita Senha de ser Igual Ao campo Senha", Identical::MISSING_TOKEN );
+        \$StripTags = new StripTags ();
+        \$StringTrim = new StringTrim ();
+
+        // Informação para a coluna id:
+        \$id = new \Zend\InputFilter\Input ( "id" );
+        \$id->setRequired ( false )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        // \$id->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$id );
+
+        // Informação para a coluna title:
+        \$title = new \Zend\InputFilter\Input ( "title" );
+        \$title->setRequired ( true )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        \$title->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$title );
+
+         //coloque aqui os filtros adicionais
+
+         // Informação para a coluna state:
+        \$state = new \Zend\InputFilter\Input ( "state" );
+        \$state->setRequired ( true )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        \$state->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$state );
+
+        // Informação para a coluna ordering:
+        \$ordering = new \Zend\InputFilter\Input ( "ordering" );
+        \$ordering->setRequired ( false )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        // \$ordering->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$ordering );
+
+        // Informação para a coluna access:
+        \$access = new \Zend\InputFilter\Input ( "access" );
+        \$access->setRequired ( true )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        \$access->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$access );
+
+        // Informação para a coluna modified:
+        \$modified = new \Zend\InputFilter\Input ( "modified" );
+        \$modified->setRequired ( false )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        // \$modified->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$modified );
+
+        // Informação para a coluna created:
+        \$created = new \Zend\InputFilter\Input ( "created" );
+        \$created->setRequired ( false )->getFilterChain ()->attach ( \$StringTrim )->attach ( \$StripTags );
+        // \$created->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$created );
+
+        // Informação para a coluna publish_up:
+        \$publish_up = new \Zend\InputFilter\Input ( "publish_up" );
+        \$publish_up->setRequired ( false )->getFilterChain ()->attach (\$StringTrim )->attach (\$StripTags );
+        // \$publish_up->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$publish_up );
+
+        // Informação para a coluna publish_down:
+        \$publish_down = new \Zend\InputFilter\Input ( "publish_down" );
+        \$publish_down->setRequired ( false )->getFilterChain ()->attach (\$StringTrim )->attach (\$StripTags );
+        // \$publish_down->getValidatorChain()->attach(\$emptyfilter);
+        \$this->add ( \$publish_down );
+
+    }
+}
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-inputfilter</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

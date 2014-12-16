@@ -1,0 +1,63 @@
+<snippet>
+    <content><![CDATA[
+<?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+ * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+namespace ${1:_PACKAGE_};
+
+return array(
+    'controllers' => array(
+        'invokables' => array(
+            '${1}\Controller\Index' => '${1}\Controller\IndexController',
+        ),
+    ),
+        'router' => array(
+        'routes' => array(
+            '${2:rota}' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/${2}[/][:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+
+                    ),
+                    'defaults' => array(
+                        'controller' => '${1}\Controller\Index',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
+        ),
+    ),
+
+        'doctrine' => array(
+                'driver' => array(
+                        __NAMESPACE__ . '_driver' => array(
+                                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                                'cache' => 'array',
+                                'paths' => array(__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity')
+                        ),
+                        'orm_default' => array(
+                                'drivers' => array(
+                                        __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver'
+                                ),
+                        ),
+                ),
+        ),
+);
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-module-config</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

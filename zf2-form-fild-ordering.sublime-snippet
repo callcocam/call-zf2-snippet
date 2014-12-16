@@ -1,0 +1,25 @@
+<snippet>
+    <content><![CDATA[
+//Informação para a coluna ordering:
+        \$this->ordering=\$ordering;
+        \$this->add(array(
+                'type' => 'Zend\Form\Element\Select',
+                'name' => 'ordering',
+                'options' => array(
+                        "label" => "FILD_ORDERING_LABEL",
+                        'empty_option'   => '---Selecione---',
+                        'value_options' => \$this->ordering,
+                ),
+                'attributes' => array(
+                        "id" => "ordering",
+                        "title" =>"FILD_ORDERING_DESC",
+                        "class" => "form-control input-sm select",
+
+                )
+        ));
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-form-fild-ordering</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

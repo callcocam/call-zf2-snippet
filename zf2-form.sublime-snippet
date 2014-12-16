@@ -1,0 +1,51 @@
+<snippet>
+    <content><![CDATA[
+<?php
+namespace ${1:_PACKAGE_}\Form;
+
+use ${1}\Form\\${2}Filter;
+use Base\Form\AbstractForm;
+class ${2:_SUBPACKAGE_}\Form extends AbstractForm {
+    //protected \$ordering;
+    public function __construct(\$name = null,\$roles) {
+        // we want to ignore the name passed
+        parent::__construct('${2}');
+        \$this->setAttribute('method', 'post');
+        \$this->setInputFilter(new ${2}Filter());
+        \$this->roles=\$roles;
+
+         //informações do campo id
+        \$this->add(array( "name" => "id",
+                "type" => "hidden",
+                "options" => array(
+                        //"label" => "ID.*",
+                ), "attributes" => array(
+                        "id" => "id",
+                        "class" =>"form-control input-sm",
+                        "placeholder" =>"FILD_ID_PLACEHOLDER") ));
+            //informações do campo title
+             \$this->add(array(
+                "name" => "title",
+                "type" => "Text",
+                "options" => array(
+                    "label" => "FILD_TITLE_LABEL",
+                ),
+                'attributes' => array(
+                        "id" => "title",
+                        "class" => "form-control input-sm",
+                        "required"=>"required",
+                        "title" => "FILD_TITLE_DESC",
+                         "placeholder" =>"FILD_TITLE_PLACEHOLDER"
+                )
+        ));
+
+
+
+    }
+}
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+     <tabTrigger>zf2-form</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>
