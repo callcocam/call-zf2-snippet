@@ -1,0 +1,22 @@
+<snippet>
+    <content><![CDATA[
+public function Read${1:NameFunctio}(\$_this,\$value,\$param,\$state,\$params)
+    {
+                \$repository=\$state;
+                if(\$state):
+                \$data_corrent=" da-slide-current";
+                \$repository=\$this->em->getRepository('CALL${2:NameSpace}\Entity\\${3:Class}')->findBy(array('state'=>'0',\$param=>md5(\$value)));?>
+                <?php if(\$repository): ?>
+                <?php foreach(\$repository as \$value): ?>
+                html
+                 <?php endforeach; ?>
+                <?php endif;?>
+                <?php endif;?>
+               <?php
+    }
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-function-helper</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

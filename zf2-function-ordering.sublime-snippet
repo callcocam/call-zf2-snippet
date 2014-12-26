@@ -1,0 +1,20 @@
+<snippet>
+    <content><![CDATA[
+public function fetchOrder(\$condicao="auth")
+        {
+            \$entities = \$this->findBy(array('state'=>'0','assetId'=>md5(\$condicao)),array('ordering'=>'ASC'));
+            \$array=array();
+            \$i=0;
+            \$array[\$i]="Primeiro";
+            foreach(\$entities as \$entity)
+            {   \$i++;
+                \$array[\$i]=trim(\$entity->getTitle());
+            }
+            return \$array;
+        }
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-function-ordering</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

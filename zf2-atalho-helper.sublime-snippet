@@ -1,0 +1,11 @@
+<snippet>
+    <content><![CDATA[
+private function Read${1:NameFunctio}(\$_this,\$helper,\$value,\$param,\$state,\$params){
+            echo \$_this->${2:NameHelper}Helper()->\$helper(\$_this,\$value,\$param,\$state,\$params);
+        }
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+     <tabTrigger>zf2-atalho-helper</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

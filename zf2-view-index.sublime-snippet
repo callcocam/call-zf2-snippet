@@ -1,0 +1,19 @@
+<snippet>
+    <content><![CDATA[
+ <?php
+ \$router = \$this->router();
+ \$params = \$router['router']->getParams();
+ \$controler= \$router['router']->getMatchedRouteName();
+ \$usuario=\$this->usuario;
+ \$configuracao=\$this->GeralHelper()->getFormulario(\$controler,"CALL${1:NameSpace}\Entity\\${2:Class}",\$usuario,\$this);
+ \$configuracao['rota']=\$controler;
+ echo \$this->TableHelper()->ReadTable(\$this,\$configuracao,'id');?>
+  <script type="text/javascript">
+  <?php  require dirname(dirname(__FILE__))."/js/${3:script}.js"; ?>
+  </script>
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-view-index</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

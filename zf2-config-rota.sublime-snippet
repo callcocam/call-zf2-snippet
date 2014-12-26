@@ -1,0 +1,22 @@
+<snippet>
+    <content><![CDATA[
+  '${1:rota}' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/${1}[/][:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+
+                    ),
+                    'defaults' => array(
+                        'controller' => 'CALL${2:NameSpace}\Controller\\${3:Controller}',
+                        'action' => '${4:index}',
+                    ),
+                ),
+            ),
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+     <tabTrigger>zf2-config-rota</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

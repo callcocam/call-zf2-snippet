@@ -1,0 +1,26 @@
+<snippet>
+    <content><![CDATA[
+<?php
+\$router = \$this->router();
+\$params = \$router['router']->getParams();
+\$controler= \$router['router']->getMatchedRouteName();
+\$params['page']=isset(\$_GET['page'])?\$_GET['page']:"1";
+/*
+        Caminho:CALLConfig\View\Helper\Config
+        Comentario:Pega as configurações do site
+        */
+ \$this->config=\$this->GeralHelper()->getConfig('${1:Codigo Site}');
+if(\$this->config): ?>
+    <?php  echo \$this->${2:HelperPrincipal}Helper()->Read${2}(\$this,\$params);?>
+<?php else: ?>
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <strong>Anteção</strong> Não existe uma cofguração valida acesse a administração e defina uma configuração padrão.
+</div>
+<?php endif; ?>
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-view-index-site</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

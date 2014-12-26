@@ -1,0 +1,13 @@
+<snippet>
+    <content><![CDATA[
+   '${1:Name}Helper' => function (\$sm) {
+            \$locator = \$sm->getServiceLocator();
+            \$em = \$locator->get('Doctrine\ORM\EntityManager');
+            return new View\Helper\\${1}Helper(\$em);
+            }
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-service-helper</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

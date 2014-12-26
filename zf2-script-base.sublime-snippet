@@ -1,0 +1,103 @@
+<snippet>
+    <content><![CDATA[
+ \$(function() {
+var carregando='<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>';
+     var print_id=0;
+     \$(".check_acao").on('ifChecked', function(event) {
+         var count=0;
+           \$("#adminForm input[type='checkbox']").each(function(i,element){
+              // Aplica a cor de fundo
+              if(element.checked){
+                 count++;
+                 \$("#print").val(element.value);
+                 print_id=element.value;
+                }
+            });
+           mostrarTab(count);
+
+     });
+     \$(".check_acao").on('ifUnchecked', function(event) {
+         var count=0;
+
+          \$("#adminForm input[type='checkbox']").each(function(i,element){
+              // Aplica a cor de fundo
+              if(element.checked){
+                 count++;
+                 \$("#print").val(element.value);
+                 print_id=element.value;
+              }
+          });
+        mostrarTab(count);
+       });
+     //When unchecking the checkbox
+     \$("#check-all").on('ifUnchecked', function(event) {
+        //Uncheck all checkboxes
+        \$(".check_acao", ".table").iCheck("uncheck");
+
+     });
+     //When checking the checkbox
+     \$("#check-all").on('ifChecked', function(event) {
+        //Check all checkboxes
+        \$(".check_acao", ".table").iCheck("check");
+
+     });
+
+     function mostrarTab(contador)
+     {
+         \$("#box").val(contador);
+         if(contador==1)
+         {
+         \$("#tab_relatorio").css('display',"block");
+         }
+          else
+         {
+         \$("#tab_relatorio").css('display',"none");
+         }
+     }
+                 \$('.ReportTable').dataTable({
+                     /* set up row grouping */
+                         "fnDrawCallback": function (oSettings) {
+                         if (oSettings.aiDisplay.length == 0) {
+                             return;
+                         }
+
+                     },
+                     "bPaginate": true,
+                     "bLengthChange": true,
+                     "bFilter": true,
+                     "bSort": true,
+                     "bInfo": true,
+                     "bAutoWidth": false,
+                     "order": [[ 0, "desc" ]],
+                         "oLanguage": {
+                            "sProcessing": "Processando...",
+                            "sLengthMenu": "Mostrar _MENU_ registros",
+                            "sZeroRecords": "Não foram encontrados resultados",
+                            "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty": "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix": "",
+                            "sSearch": "Buscar:",
+                            "sUrl": "",
+                            "oPaginate": {
+                            "sFirst": "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext": "Seguinte",
+                            "sLast": "Último"
+                            }
+                   },
+
+                     //CALULATE FOOTER TOTALS ON FOTER CALLBACK
+
+                     "fnFooterCallback": function (nRow, aasData, iStart, iEnd, aiDisplay) {
+
+                     } // end footercallback
+                 });
+
+
+             });]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-script-base</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

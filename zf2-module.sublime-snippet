@@ -1,0 +1,68 @@
+<snippet>
+    <content><![CDATA[
+<?php
+namespace ${1:_PACKPAGE};
+use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
+use ${1}\Service\\${2:_SUBPACKPAGE}Service;
+class Module
+{
+   public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                ),
+            ),
+        );
+    }
+ public function getServiceConfig() {
+        return array(
+            'factories' => array(
+                  '${1}\Service\\${2}Service' => function(\$em) {
+                                  return new ${2}Service(\$em->get('\Doctrine\ORM\EntityManager'));
+                },
+                '${1}\Form\CategoriaForm' => function(\$sm)
+                        {
+                            \$em = \$sm->get('Doctrine\ORM\EntityManager');
+                            \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+                            \$parent = \$repo->fetchParent();
+                            \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+                            \$repoCategory = \$em->getRepository('${1}\Entity\\${2}');
+                            \$parentCategory = \$repoCategory->fetchOrder(\$rota);
+                            return new Form\\${2}Form('${2}',\$parent,\$parentCategory);
+                        },
+            ),
+        );
+    }
+    /*  public function getViewHelperConfig()
+            {
+                return array(
+                        'invokables' => array(
+
+                        ) ,
+                        'factories' => array(
+
+                             '${2}Helper' => function (\$sm) {
+                                        \$locator = \$sm->getServiceLocator();
+                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
+                                        return new View\Helper\${2}Helper(\$em);
+                                        }
+
+                        ),
+                );
+            }*/
+}
+
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>zf2-module</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>
