@@ -1,0 +1,64 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace CALL${1:NameSpace}\Controller;
+use CALL${1}\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+class IndexController extends AbstractController
+{
+        public function __construct() {
+        \$this->entity = 'CALL${1}\Entity\\${2:Class}';
+        \$this->service = 'CALL${1}\Service\\${2}Service';
+        \$this->form = 'CALL${1}\Form\SitesForm';
+        \$this->controller = "${3:rota}";
+        \$this->route = "${3}";
+        \$this->templete="/call-${4:view}/index/index";
+        \$this->action=array('action'=>'index');
+        }
+
+        public function indexAction()
+        {
+        //setamos o templete
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-${4}/index/index";
+        return parent::indexAction();
+        }
+
+          
+        // SESSÂO CONTATO
+        public function sitecontatoAction()
+        {
+            \$message="";
+            \$param =\$this->params()->fromRoute('action','index');
+            \$request = \$this->getRequest();
+            if (\$request->isPost()) {
+                \$this->form='CALLContato\Form\ContatositeForm';
+                \$form = \$this->getForm();
+                \$data = \$request->getPost()->toArray();
+                \$form->setData(\$data);
+                if (\$form->isValid()) :
+                \$servico = \$this->getServiceLocator()->get('CALLContato\Service\ContatoService');
+                \$servico->send(\$data);
+                \$message="MESSAGE_EMAIL_SUCCESS_LABEL";
+                \$this->messages()->flashSuccess(\$message);
+                return \$this->redirect()->toRoute("${3}",array('action'=>\$param));
+                else :
+                \$message="FALHA AO ENVIAR O EMAIL<p>";
+                \$erro=\$form->getMessages();
+                if (isset(\$erro)):
+                foreach (\$erro as \$key => \$value) {
+                    foreach (\$value as \$value_i) {
+                        \$this->messages()->flashError(\$key.": ".\$value_i);
+                    }
+                }
+                endif;
+                endif;
+            }
+            return \$this->redirect()->toRoute("${3}",array('action'=>\$param));
+        }
+       ]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	  <tabTrigger>zf2-index-controller-site</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

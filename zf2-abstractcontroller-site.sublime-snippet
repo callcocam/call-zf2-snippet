@@ -1,0 +1,257 @@
+<snippet>
+	<content><![CDATA[
+<?php
+/*
+ * To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
+/**
+ * Description of AbstractController
+ *
+ * @author Claudio
+ */
+
+namespace CALL${1:NameSpace}\Controller;
+
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Base\Model\Contas;
+use Zend\View\Model\ViewModel;
+use Zend\Authentication\AuthenticationService;
+use  Zend\Authentication\Storage\Session as SessionStorage;
+use Zend\View\Model\JsonModel;
+use CALLNfe\NFe\ToolsNFePHP;
+use Base\View\Helper\GeralHelper;
+
+abstract class AbstractController extends AbstractActionController {
+
+	protected \$em;
+	protected \$entity;
+	protected \$controller;
+	protected \$route;
+	protected \$action;
+	protected \$service;
+	protected \$form;
+	protected \$qtd_registro=100;
+	protected \$Query="";
+	protected \$user;
+	protected \$terminal=false;
+	protected \$layout_template="layout/layout_${2:layout}";
+	protected \$templete="/call-admin/index/index";
+	protected \$sessao_usuario="Cliente_${2}";
+	protected \$config;
+	protected \$nfe=NULL;
+	protected \$sl;
+	protected \$caixa;
+	protected \$data;
+	protected \$site="${2}";
+	public function onDispatch( \Zend\Mvc\MvcEvent \$e )
+	{
+		if(\$this->getConfig(\$this->site)){
+		\$this->getAuthService();
+		if(\$this->authservice->hasIdentity()){
+			\$param =\$this->params()->fromRoute('action','index');
+			//carregar os privilegios
+			\$acl = \$this->getServiceLocator()->get("CALLAcl\Permissions\Acl");
+			//verificar acesso
+			if(\$acl->isAllowed(\$this->user->getAccess(),\$this->route,strtolower(\$param)))
+			{
+				\$this->messages()->flashError("Acesso Negado, Contate o administrador!") ;
+				return \$this->redirect()->toRoute(\$this->config->getSite());
+			}
+		}
+
+		}else{
+
+		}
+		return parent::onDispatch( \$e );
+	}
+	abstract function __construct();
+
+
+	public function indexAction() {
+
+	    \$view=new ViewModel(array(
+		'form'=>\$this->form,
+		'contas'=>\$this->SigaContas(),
+		'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
+		'caixa'=>\$this->caixa,
+		'config'=>\$this->config,
+		'user'=>\$this->user));
+		\$this->layout(\$this->layout_template);
+		\$view->setTemplate(\$this->templete);
+		\$view->setTerminal(\$this->terminal);
+		return \$view;
+	}
+
+	public function inserirAction() {
+		//carrega o formulario
+		\$this->form =\$this->getForm();
+		\$request=\$this->getRequest();
+		//verifica se foi passado um post
+		if(\$request->isPost()){
+			//setamos os valores no formuario
+			\$this->data=\$this->SigaContas()->Convert_decimal(array_merge_recursive(
+					\$request->getPost()->toArray(),
+					\$request->getFiles()->toArray()));
+			//\$this->printAll(\$this->data);
+			\$this->form->setData(\$this->data);
+			if(\$this->form->isValid())//validamos o formulario
+			{
+				//se o formulario foi validado
+				\$service=\$this->getServiceLocator()->get(\$this->service);
+				\$this->data['pasta_caminho']=\$this->getRequest()->getServer('DOCUMENT_ROOT', false);
+				//salva no banco
+				if(\$service->save(\$this->data))
+				{
+					//Carrega a menssagem de resultado
+					\$this->messages()->flashSuccess('CADASTRADO COM SUCESSO!');
+					return \$this->redirect()->toRoute(\$this->route,\$this->action);}
+				}
+			else
+				{
+				\$erro=\$this->form->getMessages();
+				\$this->printAll(\$erro);
+				if (isset(\$erro)):
+				foreach (\$erro as \$key => \$value) {
+					foreach (\$value as \$value_i) {
+						\$this->messages()->flashError(\$key.": ".\$value_i);
+					}
+				}
+			endif;
+			}
+		}
+		\$this->messages()->info('MESSAGE_OBRIGATORIO_LABEL');
+		\$view=new ViewModel(array(
+					'form'=>\$this->form,
+					'contas'=>\$this->SigaContas(),
+					'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
+					'caixa'=>\$this->caixa,
+					'config'=>\$this->config,
+					'user'=>\$this->user));
+			\$this->layout(\$this->layout_template);
+			\$view->setTemplate(\$this->templete);
+			\$view->setTerminal(\$this->terminal);
+		return \$view;
+	}
+
+	public function editarAction() {
+		//pegar o codigo passado pela url
+		\$param =(int)\$this->params()->fromRoute('id',0);
+		//verifica se foi passado um codigo valido
+		if(!\$param)
+		{
+			\$this->messages()->flashError("MESSAGE_NOTPOST_ERRO");
+			return \$this->redirect()->toRoute(\$this->route);
+		}
+		else {
+			//carrega o formulario
+			\$this->form = \$this->getForm();
+			//pega os dados do banco
+			\$repository=\$this->SigaContas()->Convert_float(\$this->getEm()->getRepository(\$this->entity)->find(\$param)->toArray());
+			//trata os dados das duas tabelas
+			foreach (\$repository as \$key => \$value) {
+
+				if(\$value instanceof \Datetime)
+					\$data[\$key]=\$value->format("Y/m/d");
+				else
+					\$data[\$key]=\$value;
+
+			}
+			\$this->messages()->info('MESSAGE_OBRIGATORIO_LABEL');
+			//carrega o form
+			\$this->form->setData(\$data);
+			\$view=new ViewModel(array(
+					'form'=>\$this->form,
+					'contas'=>\$this->SigaContas(),
+					'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
+					'caixa'=>\$this->caixa,
+					'config'=>\$this->config,
+					'user'=>\$this->user));
+			\$this->layout(\$this->layout_template);
+			\$view->setTemplate(\$this->templete);
+			\$view->setTerminal(\$this->terminal);
+			return \$view;
+		}
+
+	}
+	public function excluirAction() {
+
+		\$request=\$this->getRequest();
+		if(\$request->isPost()){
+			\$this->data=\$request->getPost('id');
+			foreach (\$this->data as \$value) {
+				\$service=\$this->getServiceLocator()->get(\$this->service);
+				if(\$service->remove(array('id' => \$value)))
+				{
+
+				}
+			}
+		}
+		else {
+			\$this->messages()->flashError("MESSAGE_NOTPOST_ERRO");
+			return \$this->redirect()->toRoute(\$this->route);
+		}
+		\$this->messages()->flashSuccess("MESSAGE_PUBLICHED_SUCCESS");
+		return \$this->redirect()->toRoute(\$this->route);
+
+	}
+
+
+	public function getConfig(\$site='')
+	{
+		//\$this->acessos=\$this->getAcesso();
+		//pegamos os dados da empresa pelo a empresa que o usuario esta cadastrado
+		\$service=\$this->getEm()->getRepository("CALLConfiguracao\Entity\ConfiguracaoList");
+		//salvamos na var config
+		\$this->config=\$service->findOneBy(array('site'=>\$site));
+		return \$this->config;
+	}
+
+
+	protected function getForm()
+	{
+		if (is_string(\$this->form))
+			return   \$this->getServiceLocator()->get('FormElementManager')->get(\$this->form);
+		else
+			return  \$this->form;
+	}
+
+	public function getAuthService()
+	{
+		\$this->authservice = new AuthenticationService();
+		//se existir um usuario logado carrgamos a sessao
+		\$this->authservice->setStorage(new SessionStorage(\$this->sessao_usuario));
+		//carregamos a variavel user com os dados do usuario
+		\$this->user=\$this->authservice->getStorage()->read();
+
+		return \$this->authservice;
+
+	}
+
+	public function getEm()
+	 {
+		\$this->em = \$this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+		return \$this->em;
+		}
+
+
+	public function printAll(\$erro,\$stop=TRUE)
+	{
+		echo "<PRE>";
+		print_r(\$erro);
+		echo "</PRE>";
+		if(\$stop)
+			exit();
+	}
+
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	  <tabTrigger>zf2-abstractcontroller-site</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

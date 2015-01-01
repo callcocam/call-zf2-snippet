@@ -1,0 +1,29 @@
+<snippet>
+	<content><![CDATA[
+public function Read${1:Helper}(\$_this,\$params)
+{
+     error_reporting(E_ALL);ini_set('display_errors', 'On');
+     \$modulo=\$this->em->getRepository('CALLAcl\Entity\Resources')->findOneBy(array('url'=>\$_this->config->getSite()));
+     \$repository=\$this->em->getRepository('CALLPlugin\Entity\Plugin')->findBy(array('state'=>'0','tabelaId'=>\$modulo->getId()),array('ordering'=>"ASC"));
+     \$paginas=\$this->em->getRepository('CALLPlugin\Entity\Paginas')->findOneBy(array('url'=>\$params['action']));
+    if (\$paginas):
+     if(\$repository):
+     foreach (\$repository as \$value) :
+     \$helper=\$value->getTitle();
+        \$state=false;
+        \$pagina_items=\$this->em->getRepository('CALLPlugin\Entity\PaginasAcesso')->findBy(array(
+                'pluginId'=>\$value->getId(),
+                'paginaId'=>\$paginas->getId()));
+        if(\$pagina_items)
+            \$state=true;
+     echo \$this->\$helper(\$_this,\$helper,\$value->getValue(),\$value->getParam(),\$state,\$params);
+     endforeach;
+     endif;
+     endif;
+    }
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-function-principal-helper</tabTrigger> 
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

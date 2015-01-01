@@ -1,0 +1,124 @@
+<snippet>
+	<content><![CDATA[
+<?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+ * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+namespace CALL${1:NameSpace};
+
+return array(
+    'controllers' => array(
+        'invokables' => array(
+            'CALL${1}\Controller\Index' 		=> 'CALL${1}\Controller\IndexController',
+            'CALL${1}\Controller\Resources' 	=> 'CALL${1}\Controller\ResourcesController',
+            'CALL${1}\Controller\Paginas' 	    => 'CALL${1}\Controller\PaginasController',
+            'CALL${1}\Controller\Plugins' 	    => 'CALL${1}\Controller\PluginController',
+            'CALL${1}\Controller\Menu' 		    => 'CALL${1}\Controller\MenuController',
+           ),
+    ),
+        'router' => array(
+        'routes' => array(
+            '${1:rota}' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/${2}[/][:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+
+                    ),
+                    'defaults' => array(
+                        'controller' => 'CALL${1}\Controller\Index',
+                        'action' => '${2}',
+                    ),
+                ),
+            ),
+              '${2}-resources' => array(
+                    'type' => 'segment',
+                    'options' => array(
+                        'route' => '/${2}-resources[/][:action][/:id]',
+                        'constraints' => array(
+                            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+    
+                        ),
+                        'defaults' => array(
+                            'controller' => 'CALL${1}\Controller\Resources',
+                            'action' => 'index',
+                        ),
+                    ),
+                ),
+                '${2}-paginas' => array(
+                              'type' => 'segment',
+                              'options' => array(
+                                  'route' => '/${2}-paginas[/][:action][/:id]',
+                                  'constraints' => array(
+                                      'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+              
+                                  ),
+                                  'defaults' => array(
+                                      'controller' => 'CALL${1}\Controller\Paginas',
+                                      'action' => 'index',
+                                  ),
+                              ),
+                          ),
+                  '${2}-plugins' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '/${2}-plugins[/][:action][/:id]',
+                                    'constraints' => array(
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'CALL${1}\Controller\Plugins',
+                                        'action' => 'index',
+                                    ),
+                                ),
+                            ),
+                    '${2}-menu' => array(
+                                  'type' => 'segment',
+                                  'options' => array(
+                                      'route' => '/${2}-menu[/][:action][/:id]',
+                                      'constraints' => array(
+                                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                  
+                                      ),
+                                      'defaults' => array(
+                                          'controller' => 'CALL${1}\Controller\Menu',
+                                          'action' => 'index',
+                                      ),
+                                  ),
+                              ),
+                   
+        ),
+    ),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
+        ),
+    ),
+
+        'doctrine' => array(
+                'driver' => array(
+                        __NAMESPACE__ . '_driver' => array(
+                                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                                'cache' => 'array',
+                                'paths' => array(__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity')
+                        ),
+                        'orm_default' => array(
+                                'drivers' => array(
+                                        __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver'
+                                ),
+                        ),
+                ),
+        ),
+);
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-module-config-site</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

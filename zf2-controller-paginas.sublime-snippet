@@ -1,0 +1,50 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace CALL${1:Namespace}\Controller;
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+
+class PaginasController extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity              = 'CALLPlugin\Entity\Paginas';
+        \$this->service             = 'CALLPlugin\Service\PaginasService';
+        \$this->form                = 'CALLPlugin\Form\PaginasForm';
+        \$this->controller          = "${2:rota}-paginas";
+        \$this->route               = "${2}-paginas";
+        \$this->templete            ="/call-plugin/index/index";
+        \$this->action              =array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+       	//setamos o templete
+    	\$this->templete        ="/call-plugin/paginas/index";
+    	return parent::listarAction();
+    }
+    public function inserirAction()
+    {	\$this->action            =array('action'=>"inserir");
+    	\$this->templete          ="/call-plugin/paginas/editar";
+    	return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+    	\$this->action              =array('action'=>"inserir");
+    	\$this->templete            ="/call-plugin/paginas/editar";
+    	return parent::editarAction();
+    }
+    public function listadirAction()
+    {
+        \$View                               =new ViewModel(array('pasta'=>\$this->route,"dir"=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false)));
+        \$view->setTerminal(true);
+        return \$view;
+    }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-controller-paginas</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

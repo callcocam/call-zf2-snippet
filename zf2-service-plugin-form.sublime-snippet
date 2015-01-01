@@ -1,0 +1,25 @@
+<snippet>
+	<content><![CDATA[
+ 'CALL${1:Namespace}\Form\PluginForm' => function(\$sm)
+        {
+        \$em = \$sm->get('Doctrine\ORM\EntityManager');
+        \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+        \$parent = \$repo->fetchParent();
+
+        \$repoResources = \$em->getRepository('CALLAcl\Entity\Resources');
+         \$rota = \$repoResources->fetchPairs('id');
+
+        //opciona se ouver ordering
+        \$repo_paginas =  \$em->getRepository('CALLPlugin\Entity\Paginas');
+        \$paginas = \$repo_paginas->fetchParent('getId','${2:rota}-paginas');
+        //opciona se ouver ordering
+        \$repo_ordering =  \$em->getRepository('CALLPlugin\Entity\Plugin');
+        \$ordering = \$repo_ordering->fetchOrder("${2}-plugins");
+        return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$rota,\$ordering,\$paginas);
+    },
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-service-plugin-form</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

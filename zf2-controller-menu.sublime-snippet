@@ -1,0 +1,75 @@
+<snippet>
+	<content><![CDATA[
+<?php
+
+namespace CALL${1:Namespace}\Controller;
+
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
+
+class MenuController extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity = 'CALLMenu\Entity\Menu';
+        \$this->service = 'CALLMenu\Service\MenuService';
+        \$this->form = 'CALL${1}\Form\MenuForm';
+        \$this->controller = "${2:rota}-menu";
+        \$this->route = "${2}-menu";
+        \$this->templete="/call-menu/index/index";
+        \$this->action=array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+         \$this->entity = 'CALLMenu\Entity\MenuList';
+        //setamos o templete
+        \$this->templete="/call-menu/index/index";
+        return parent::listarAction();
+    }
+    public function inserirAction()
+    {    \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-menu/index/editar";
+        return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-menu/index/editar";
+        return parent::editarAction();
+    }
+    public function listadirAction()
+        {
+            \$view=new ViewModel(array('dir' => \$this->route,'contas'=>\$this->SigaContas(),'usuario'=>\$this->user));
+            //setamos o templete
+            \$view->setTemplate("/call-midia/index/listadir");
+            \$view->setTerminal(true);
+            return \$view;
+
+        }
+
+    public function categoriaAction()
+    {
+        //pegar o codigo passado pela url
+        \$param =(int)\$this->params()->fromRoute('id',0);
+        \$data_pronto=array();
+        \$resultado= \$this->getEm()->getRepository("CALLMenu\Entity\MenuItem")->findBy(array('parentId'=>\$param));
+        if(\$resultado):
+        foreach (\$resultado as \$key => \$value) {
+            \$retorno['id']      =\$value->getCatid();
+            \$data_pronto[]=\$retorno;
+        }
+        endif;
+        if(\$data_pronto)
+            return new JsonModel(\$data_pronto);
+        else
+            return new JsonModel(array());
+    }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-controller-menu</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

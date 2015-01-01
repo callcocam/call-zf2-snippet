@@ -1,0 +1,30 @@
+<snippet>
+	<content><![CDATA[
+'CALL${1:Namespace}\Form\MenuForm' => function(\$sm)
+    {
+        \$em = \$sm->get('Doctrine\ORM\EntityManager');
+        \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+        \$parent = \$repo->fetchParent();
+        \$category=array();
+         \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+        //opcional se ouver categoria
+        \$repo_category =\$em->getRepository('CALLCategoria\Entity\Categoria');
+        \$category = \$repo_category->fetchParent('${2:rota}-categoria');
+
+        //opcional se ouver categoria
+        \$repo_menu = \$em->getRepository('CALLMenu\Entity\Menu');
+        //opcional se ouver odering
+        \$odering = \$repo_menu->fetchOrder(\$rota);
+
+        //opcional se ouver categoria
+        \$repo_paginas = \$em->getRepository('CALLPlugin\Entity\Paginas');
+        \$parent_paginas = \$repo_paginas->fetchParent('getUrl','${2}-paginas');
+
+        return new \CALLMenu\Form\MenuForm('Menu',\$parent,\$category,\$parent_paginas, \$odering);
+    },
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-service-menu-form</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,117 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace CALL${1:NameSpace};
+use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
+use CALL${1}\Service\\${2:Classs}Service;
+class Module
+{
+   public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                ),
+            ),
+        );
+    }
+ public function getServiceConfig() {
+        return array(
+        'factories' => array(
+              'CALL${1}\Service\\${2}Service' => function(\$em) {
+                   return new ${1}Service(\$em->get('\Doctrine\ORM\EntityManager'));
+            },
+         'CALL${1}\Form\PluginForm' => function(\$sm)
+                {
+                \$em = \$sm->get('Doctrine\ORM\EntityManager');
+                \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+                \$parent = \$repo->fetchParent();
+        
+                \$repoResources = \$em->getRepository('CALLAcl\Entity\Resources');
+                 \$rota = \$repoResources->fetchPairs('id');
+        
+                //opciona se ouver ordering
+                \$repo_paginas =  \$em->getRepository('CALLPlugin\Entity\Paginas');
+                \$paginas = \$repo_paginas->fetchParent('getId','${3:rota}-paginas');
+                //opciona se ouver ordering
+                \$repo_ordering =  \$em->getRepository('CALLPlugin\Entity\Plugin');
+                \$ordering = \$repo_ordering->fetchOrder("${3}-plugins");
+                return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$rota,\$ordering,\$paginas);
+        		},
+		'CALL${1}\Form\MenuForm' => function(\$sm)
+		    {
+		        \$em = \$sm->get('Doctrine\ORM\EntityManager');
+		        \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+		        \$parent = \$repo->fetchParent();
+		        \$category=array();
+		         \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+		        //opcional se ouver categoria
+		        \$repo_category =\$em->getRepository('CALLCategoria\Entity\Categoria');
+		        \$category = \$repo_category->fetchParent('${3}-categoria');
+		
+		        //opcional se ouver categoria
+		        \$repo_menu = \$em->getRepository('CALLMenu\Entity\Menu');
+		        //opcional se ouver odering
+		        \$odering = \$repo_menu->fetchOrder(\$rota);
+		
+		        //opcional se ouver categoria
+		        \$repo_paginas = \$em->getRepository('CALLPlugin\Entity\Paginas');
+		        \$parent_paginas = \$repo_paginas->fetchParent('getUrl','${3}-paginas');
+		
+		        return new \CALLMenu\Form\MenuForm('Menu',\$parent,\$category,\$parent_paginas, \$odering);
+		    },
+                                
+            ),
+        );
+    }
+    public function getViewHelperConfig()
+            {
+                return array(
+                        'invokables' => array(
+
+                        ) ,
+                        'factories' => array(
+                            '${1}Helper' => function (\$sm) {
+                                        \$locator = \$sm->getServiceLocator();
+                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
+                                        return new View\Helper\\${1}Helper(\$em);
+                                        },
+                               '${1}MenuHelper' => function (\$sm) {
+                                        \$locator = \$sm->getServiceLocator();
+                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
+                                        return new View\Helper\\${1}MenuHelper(\$em);
+                                        },
+                               '${1}FooterHelper' => function (\$sm) {
+                                        \$locator = \$sm->getServiceLocator();
+                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
+                                        return new View\Helper\\${1}FooterHelper(\$em);
+                                        },
+                               '${1}HeaderHelper' => function (\$sm) {
+                                        \$locator = \$sm->getServiceLocator();
+                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
+                                        return new View\Helper\\${1}HeaderHelper(\$em);
+                                        },
+                               '${1}ContatoHelper' => function (\$sm) {
+                                        \$locator = \$sm->getServiceLocator();
+                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
+                                        return new View\Helper\\${1}ContatoHelper(\$em,\$locator);
+                                        }
+
+                             ),
+                );
+            }
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-module-site</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
