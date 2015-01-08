@@ -16,13 +16,13 @@ return array(
             'CALL${1}\Controller\Index' 		=> 'CALL${1}\Controller\IndexController',
             'CALL${1}\Controller\Resources' 	=> 'CALL${1}\Controller\ResourcesController',
             'CALL${1}\Controller\Paginas' 	    => 'CALL${1}\Controller\PaginasController',
-            'CALL${1}\Controller\Plugins' 	    => 'CALL${1}\Controller\PluginController',
+            'CALL${1}\Controller\Plugin' 	    => 'CALL${1}\Controller\PluginController',
             'CALL${1}\Controller\Menu' 		    => 'CALL${1}\Controller\MenuController',
            ),
     ),
         'router' => array(
         'routes' => array(
-            '${1:rota}' => array(
+            '${2:rota}' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/${2}[/][:action][/:id]',
@@ -64,16 +64,16 @@ return array(
                                   ),
                               ),
                           ),
-                  '${2}-plugins' => array(
+                  '${2}-plugin' => array(
                                 'type' => 'segment',
                                 'options' => array(
-                                    'route' => '/${2}-plugins[/][:action][/:id]',
+                                    'route' => '/${2}-plugin[/][:action][/:id]',
                                     'constraints' => array(
                                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                 
                                     ),
                                     'defaults' => array(
-                                        'controller' => 'CALL${1}\Controller\Plugins',
+                                        'controller' => 'CALL${1}\Controller\Plugin',
                                         'action' => 'index',
                                     ),
                                 ),

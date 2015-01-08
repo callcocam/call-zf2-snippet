@@ -8,15 +8,15 @@ use Base\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 
-class PluginsController extends AbstractController
+class PluginController extends AbstractController
 {
 
     public function __construct() {
         \$this->entity = 'CALLPlugin\Entity\Plugin';
         \$this->service = 'CALLPlugin\Service\PluginService';
         \$this->form = 'CALL${1}\Form\PluginForm';
-        \$this->controller = "${2:rota}-plugins";
-        \$this->route = "${2}-plugins";
+        \$this->controller = "${2:rota}-plugin";
+        \$this->route = "${2}-plugin";
         \$this->templete="/call-plugin/index/index";
         \$this->action=array('action'=>'index');
     }

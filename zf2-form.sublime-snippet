@@ -5,7 +5,7 @@ namespace ${1:_PACKAGE_}\Form;
 
 use ${1}\Form\\${2}Filter;
 use Base\Form\AbstractForm;
-class ${2:_SUBPACKAGE_}\Form extends AbstractForm {
+class ${2:_SUBPACKAGE_}Form extends AbstractForm {
     //protected \$ordering;
     public function __construct(\$name = null,\$roles) {
         // we want to ignore the name passed

@@ -9,7 +9,6 @@
         Caminho:CALLConfig\View\Helper\Config
         Comentario:Pega as configurações do site
         */
- \$this->config=\$this->GeralHelper()->getConfig('${1:Codigo Site}');
 if(\$this->config): ?>
     <?php  echo \$this->${2:HelperPrincipal}Helper()->Read${2}(\$this,\$params);?>
 <?php else: ?>

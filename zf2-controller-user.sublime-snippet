@@ -1,0 +1,81 @@
+<snippet>
+	<content><![CDATA[
+<?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/Cliente for the canonical source repository
+ * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+
+namespace CALL${1:NameSpace}\Controller;
+
+use CALLAuth\Controller\AbstractController;
+use Base\Entity\Contas;
+use Zend\View\Model\ViewModel;
+
+
+class UserController extends AbstractController
+{
+	protected \$storage;
+	protected \$authservice;
+	protected \$sl;
+	public function __construct()
+	{
+
+		\$this->controller='${2:rota}-user';
+		\$this->route="${2}-user";
+		\$this->form= 'CALLAuth\Form\User';
+		\$this->service='CALLAuth\Service\UsuarioService';
+		\$this->entity= 'CALLAuth\Entity\Usuario';
+		\$this->templete="/call-${2}/index/index";
+		\$this->layout_template="layout/layout_${2}";
+		\$this->sessao_usuario="Cliente_${2}";
+		\$this->action=array('action'=>'${2}-minha-conta');
+		\$this->site='${2}';
+		\$this->success=array('action'=>'${2}-minha-conta');
+	}
+	public function ${2}minhacontaAction()
+	{
+	\$this->form= 'CALLAuth\Form\UsuarioForm';
+	\$request=\$this->getRequest();
+	if(\$request->isPost()):
+	\$this->route=\$request->getPost('rota');
+	\$this->action=array('action'=>\$request->getPost('action'));
+	endif;
+	return parent::inserirAction();
+	}
+	public function ${2}loginAction()
+	{
+	\$this->form= 'CALLAuth\Form\User';
+	\$this->route="${2}-user";
+	\$this->action=array('action'=>'${2}-login');
+	return parent::loginAction();
+	}
+	public function ${2}relembreAction()
+	{
+	\$this->form= 'CALLAuth\Form\UsuarioForm';
+	\$this->route="${2}-user";
+	\$this->action=array('action'=>'${2}-login');
+	return parent::relembreAction();
+	}
+	public function authenticateAction()
+	{
+	\$this->form= 'CALLAuth\Form\User';
+	\$request=\$this->getRequest();
+	if(\$request->isPost()):
+	\$this->route=\$request->getPost('rota');
+	\$this->action=array('action'=>\$request->getPost('action'));
+	endif;
+	return parent::authenticateAction();
+	}
+
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	 <tabTrigger>zf2-controller-user</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

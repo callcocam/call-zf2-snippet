@@ -16,7 +16,7 @@ class IndexController extends AbstractController
         \$this->action=array('action'=>'index');
         }
 
-        public function indexAction()
+        public function ${3}Action()
         {
         //setamos o templete
         \$this->action=array('action'=>"inserir");
@@ -56,6 +56,7 @@ class IndexController extends AbstractController
             }
             return \$this->redirect()->toRoute("${3}",array('action'=>\$param));
         }
+}
        ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	  <tabTrigger>zf2-index-controller-site</tabTrigger>

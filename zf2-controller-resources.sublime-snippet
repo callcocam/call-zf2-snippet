@@ -1,0 +1,117 @@
+<snippet>
+	<content><![CDATA[
+<?php
+
+namespace CALL${1:NameSpace}\Controller;
+
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
+
+class ResourcesController extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity = 'CALLAcl\Entity\Resources';
+        \$this->service = 'CALLAcl\Service\ResourcesService';
+        \$this->form = 'CALLAcl\Form\ResourcesForm';
+        \$this->controller = "${2:rota}-resources";
+        \$this->route = "${2}-resources";
+        \$this->templete="/call-acl/resources/index";
+        \$this->action=array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+       //setamos o templete
+        \$this->templete="/call-acl/resources/index";
+        return parent::listarAction();
+    }
+    public function filtrarAction()
+    {
+    	\$this->templete="/call-acl/resources/index";
+    	return parent::filtrarAction();
+    }
+    public function inserirAction()
+    {
+        \$request=\$this->getRequest();
+        if(\$request->isPost())
+        {
+            \$repository=\$this->getEm()->getRepository(\$this->entity)->findOneBy(array('url'=>\$request->getPost('url')));
+             if(!\$request->getPost('id')){
+                \$nome_cache=str_replace( ".","_" ,\$_SERVER['HTTP_HOST'] ).\$this->route."_".\$request->getPost('group_id');
+                \$cache=\$this->getServiceLocator()->get("Cache");
+                \$cache->removeItem(\$nome_cache);
+                    if(\$repository)
+                    {
+
+                        \$this->flashMessenger()->addMessage(array('info'=>"MODULO JA ESTA CADASTRADO!"));
+                        return \$this->redirect()->toRoute(\$this->route,array('action'=>'inserir',));
+
+                    }
+                }
+            else
+                {
+
+                \$nome_cache=str_replace( ".","_" ,\$_SERVER['HTTP_HOST'] ).\$this->route."_".\$request->getPost('group_id');
+                \$cache=\$this->getServiceLocator()->get("Cache");
+                \$cache->removeItem(\$nome_cache);
+                    if(\$repository)
+                    {
+                         if(\$repository->getId()!=\$request->getPost('id')):
+                        \$this->flashMessenger()->addMessage(array('info'=>"MODULO JA ESTA CADASTRADO!"));
+                        return \$this->redirect()->toRoute(\$this->route,array('action'=>'editar','id'=>\$request->getPost('id')));
+                        endif;
+                    }
+
+                }
+        }
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-acl/resources/editar";
+        return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-acl/resources/editar";
+        return parent::editarAction();
+    }
+
+    public function orderingAction()
+    {
+      //pegar o codigo passado pela url
+               \$param =(int)\$this->params()->fromRoute('id',0);
+               \$data_pronto=array();
+               //verifica se foi passado um codigo valido
+               if(\$param)
+               {
+                \$repository=\$this->getEm()->getRepository(\$this->entity)->findBy(array('groupId'=>\$param,'state'=>'0'),array('ordering'=>"ASC"));
+               foreach (\$repository as \$key => \$value) {
+
+                foreach (\$value->toArray() as \$key => \$value_item) {
+
+				if(\$value_item instanceof \Datetime)
+					\$data[\$key]=\$value_item->format("Y/m/d");
+				else
+					\$data[\$key]=\$value_item;
+
+			}
+			  \$data_pronto[]=\$data;
+			}
+               }
+               \$view=new JsonModel(\$data_pronto);
+               return \$view;
+    }
+    public function listadirAction()
+    {
+        \$view=new ViewModel(array('pasta'=>\$this->route,"dir"=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false)));
+        \$view->setTerminal(true);
+        return \$view;
+    }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-controller-resources</tabTrigger> 
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

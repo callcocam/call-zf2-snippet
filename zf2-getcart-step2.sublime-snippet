@@ -1,0 +1,15 @@
+<snippet>
+	<content><![CDATA[
+	<?php \$linha="<div class=\"form-group\">
+	<label for=\"inputEmail3\" class=\"col-sm-3 control-label\">{label_rotulo} *</label>
+	<div class=\"col-sm-{colunas}\">
+	{campo_fild}
+	</div>
+	</div>";
+  	 echo \$_this->CartHelper()->getCheckoutStep2(\$_this,\$_this->url('${1:rota}-user',array('action' => '${1}-minha-conta')),'${1}','${2:action}',\$linha,\$step)?>
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	 <tabTrigger>zf2-getcart-step2</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

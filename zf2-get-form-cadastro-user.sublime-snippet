@@ -1,0 +1,27 @@
+<snippet>
+	<content><![CDATA[
+<?php \$linha="<div class=\"form-group\">
+      <label for=\"inputEmail3\" class=\"col-sm-${1:3} control-label\">{label_rotulo} *</label>
+      <div class=\"col-sm-{colunas}\">
+      {campo_fild}
+      </div>
+      </div>";
+		//para um novo usuario
+      \$array=\$array=\$_this->UsuarioHelper()->getFormNew(\$_this,\$linha,'${2:rota}-user','${2}-minha-conta');
+       //para editar o usuario 
+       \$array=\$_this->UsuarioHelper()->getFormUserLogado(\$_this,\$linha,'${2:rota}-user','${2}-minha-conta');
+       //use este para o form de acesso
+      \$array=\$_this->UsuarioHelper()->getFormLogin(\$linha,'${2}-user','${2}-relembre',"${2}");
+       //use este para o form de relembre
+      //Para cadastrar use o form de cadastro ['CALLAuth\Form\Relembre'] ou deixe sem nada no lugar de CALLAuth\Form\User
+      \$array=\$_this->UsuarioHelper()->getFormRelembre(\$linha,'${2}-user','${2}-login',"${2}");
+       //monta o formulario
+       //Para cadastrar use o form de cadastro ['CALLAuth\Form\UsuarioForm'] ou deixe sem nada no lugar de CALLAuth\Form\User
+      \$form=\$_this->UsuarioHelper()->getOpenform(\$_this,\$array,\$_this->url('${2}-user',array('action' => '${2}-minha-conta')),'CALLAuth\Form\User');?>
+  
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-get-form-cadastro-user</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

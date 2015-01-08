@@ -1,0 +1,26 @@
+<snippet>
+	<content><![CDATA[
+'CALL${1:NameSpace}\Form\ProdutoForm' => function(\$sm)
+    {
+        \$em = \$sm->get('Doctrine\ORM\EntityManager');
+        \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+        \$parent = \$repo->fetchParent();
+        \$category=array();
+        //opciona se ouver categoria
+       \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+       \$repo_category = \$em->getRepository('CALLCategoria\Entity\Categoria');
+       \$category = \$repo_category->fetchParent('${2:rota}-categoria');
+       //opciona se ouver marca
+       \$repo_marca = \$em->getRepository('CALLMarca\Entity\Marca');
+       \$marca = \$repo_marca->fetchParent();
+       //opciona se ouver ncm
+       \$repo_ncm= \$em->getRepository('CALLProduto\Entity\Ncm');
+       \$ncm = \$repo_ncm->fetchParent();
+       return new \CALLProduto\Form\ProdutoForm('Produto',\$parent,\$category, \$marca,\$ncm);
+    }
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-service-form-produto</tabTrigger> 
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

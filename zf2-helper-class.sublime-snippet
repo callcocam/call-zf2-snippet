@@ -12,7 +12,13 @@ class ${2:_SUBPACKAGE_}Helper extends AbstractHelper {
         {
             \$this->em = \$em;
         }
+//use function-principal-helper para helper do site
+//zf2-function-principal-helper
+//use function-helper para helper normal
+//zf2-function-helper
 
+//use zf2-atalho-helper para criar as chamadas das helper
+//zf2-atalho-helper
 
 }
 ]]></content>
