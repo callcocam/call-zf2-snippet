@@ -10,30 +10,30 @@ class ${2:_SUBPACKAGE_}Controller extends AbstractController
 {
 
     public function __construct() {
-        \$this->entity = '${1}\Entity\\${2}';
-        \$this->service = '${1}\Service\\${2}Service';
-        \$this->form = '${1}\Form\\${2}Form';
-        \$this->controller = "${3:rota}";
-        \$this->route = "${3}";
-        \$this->templete="/call-${3}/index/index";
+        \$this->entity = '${3:Namespace}\Entity\\${4:class}';
+        \$this->service = '${3}\Service\\${4}Service';
+        \$this->form = '${3}\Form\\${4}Form';
+        \$this->controller = "${5:rota}";
+        \$this->route = "${5}";
+        \$this->templete="/call-${6:view}/index/index";
         \$this->action=array('action'=>'index');
     }
 
     public function indexAction()
     {
         //setamos o templete
-        \$this->templete="/call-${3}/index/index";
+        \$this->templete="/call-${6}/index/index";
         return parent::listarAction();
     }
     public function inserirAction()
     {   \$this->action=array('action'=>"inserir");
-        \$this->templete="/call-${3}/index/editar";
+        \$this->templete="/call-${6}/index/editar";
         return parent::inserirAction();
     }
     public function editarAction()
     {
         \$this->action=array('action'=>"inserir");
-        \$this->templete="/call-${3}/index/editar";
+        \$this->templete="/call-${6}/index/editar";
         return parent::editarAction();
     }
     public function listadirAction()

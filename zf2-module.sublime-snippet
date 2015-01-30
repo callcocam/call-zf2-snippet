@@ -28,7 +28,7 @@ class Module
                   '${1}\Service\\${2}Service' => function(\$em) {
                                   return new ${2}Service(\$em->get('\Doctrine\ORM\EntityManager'));
                 },
-                '${1}\Form\CategoriaForm' => function(\$sm)
+                '${1}\Form\\${2}Form' => function(\$sm)
                         {
                             \$em = \$sm->get('Doctrine\ORM\EntityManager');
                             \$repo = \$em->getRepository('CALLAcl\Entity\Roles');

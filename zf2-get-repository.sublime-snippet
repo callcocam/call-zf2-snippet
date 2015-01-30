@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+* @ORM\Entity(repositoryClass="CALL${1:Namespace}\Entity\\${2:Class}Repository")
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-get-repository</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
