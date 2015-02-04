@@ -18,6 +18,8 @@ return array(
             'CALL${1}\Controller\Paginas' 	    => 'CALL${1}\Controller\PaginasController',
             'CALL${1}\Controller\Plugin' 	    => 'CALL${1}\Controller\PluginController',
             'CALL${1}\Controller\Menu' 		    => 'CALL${1}\Controller\MenuController',
+            'CALL${1}\Controller\Header'        => 'CALL${1}\Controller\HeaderController',
+            'CALL${1}\Controller\Contato'        => 'CALL${1}\Controller\ContatoController',
            ),
     ),
         'router' => array(
@@ -88,6 +90,34 @@ return array(
                                       ),
                                       'defaults' => array(
                                           'controller' => 'CALL${1}\Controller\Menu',
+                                          'action' => 'index',
+                                      ),
+                                  ),
+                              ),
+                              '${2}-header' => array(
+                                  'type' => 'segment',
+                                  'options' => array(
+                                      'route' => '/${2}-header[/][:action][/:id]',
+                                      'constraints' => array(
+                                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                  
+                                      ),
+                                      'defaults' => array(
+                                          'controller' => 'CALL${1}\Controller\Header',
+                                          'action' => 'index',
+                                      ),
+                                  ),
+                              ),
+                              '${2}-contato' => array(
+                                  'type' => 'segment',
+                                  'options' => array(
+                                      'route' => '/${2}-contato[/][:action][/:id]',
+                                      'constraints' => array(
+                                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                  
+                                      ),
+                                      'defaults' => array(
+                                          'controller' => 'CALL${1}\Controller\Contato',
                                           'action' => 'index',
                                       ),
                                   ),

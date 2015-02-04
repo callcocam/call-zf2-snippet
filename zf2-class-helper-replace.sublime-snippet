@@ -1,0 +1,160 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace ${1:Namespace}\View\Helper;
+
+use Zend\View\Helper\AbstractHelper;
+use Doctrine\ORM\EntityManager;
+
+class  ${2:Class}Helper extends AbstractHelper {
+        protected \$em;
+        public function __construct(EntityManager \$em)
+        {
+            \$this->em = \$em;
+        }
+
+public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html,\$params)
+    {
+		
+		\$data['data_corrent']="";
+		\$data['data_table']="";
+		\$data['last']="last";
+		\$col="0";
+		foreach (\$repository_item as \$key => \$value_item) {
+		\$data=\$value_item->toArray();
+		if(\$plugin->getRota()=="#"):
+		if (isset(\$data['url'])) {
+		\$data['url']=\$_this->url('${3:rota}',array('controller'=>'${3}','action'=>\$value_item->getUrl()));
+		\$data['data_corrent']=\$value_item->getUrl()==\$params['action']?"current":"";
+		\$data['last']=\$value_item->getUrl()=="${3}-contato-site"?"":"";
+		}
+		else
+		{
+			\$data['url']="#";
+		}
+		else:
+		\$data['rota']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota()));
+		endif;
+
+		\$data['url_id']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota(),'id'=>\$value_item->getId()));
+		\$col++;
+		if(\$data['data_table']=="alpha"):
+			\$data['data_table']="";
+		elseif(\$data_table==""):
+			\$data['data_table']="omega";
+		else:
+			\$data['data_table']="alpha";
+			\$plugin->getLinha(\$plugin->getLinha());
+		endif;
+		\$html.=$this->tratamento(\$_this,\$data,\$plugin->getLinha());
+		\$data['data_corrent']="";
+		} 
+		return \$html;  
+
+    }
+
+    public function findOneBy(\$_this,\$value_item=array(),\$plugin=array(),\$html,\$params)
+    {
+		\$data=\$value_item->toArray();
+		if(\$plugin->getRota()=="#"):
+		if (isset(\$data['url'])) {
+		\$data['url']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$value_item->getUrl()));
+		}
+		else
+		{
+			\$data['url']="#";
+		}
+		else:
+		\$data['rota']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota()));
+		endif;
+		\$data['data_corrent']="";
+		\$data['url_id']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota(),'id'=>\$value_item->getId()));
+		\$html.=$this->tratamento(\$_this,\$data,\$plugin->getLinha());
+		return \$html;  
+
+    }
+
+   public function tratamento(\$_this,\$data,\$linha)
+   {
+		\$aFind = array(
+		'{id}',
+		'{catid}',
+		'{images}',
+		'{images_t}',
+		'{images_g}',
+		'{carrousel_images}',
+		'{title}',
+		'{subtitle}',
+		'{url}',
+		'{url_id}',
+		'{video}',
+		'{audio}',
+		'{embed}',
+		'{campo_a}',
+		'{campo_b}',
+		'{campo_c}',
+		'{campo_d}',
+		'{campo_e}',
+		'{campo_f}',
+		'{perildo}',
+		'{valor}',
+		'{created}',
+		'{alias}',
+		'{description}',
+		'{preview}',
+		'{ativo}',
+		'{even}',
+		'{dia}',
+		'{mes}',
+		'{ano}',
+		'{rota}',
+		'{link}',
+		'{last}',
+		'{col}');
+
+		\$aSubs = array(
+		isset(\$data['id'])					?\$data['id']:'',
+		isset(\$data['catid'])				?"":'',
+		isset(\$data['images'])				?\$data['images']:'',
+		isset(\$data['images_t'])			?\$data['images_t']:'',
+		isset(\$data['images_g'])			?\$data['images_g']:'',
+		isset(\$data['carrousel_images'])	?\$data['carrousel_images']:'',
+		isset(\$data['title'])				?\$data['title']:'',
+		isset(\$data['subtitle'])			?\$data['subtitle']:'',
+		isset(\$data['url'])				?\$data['url']:"#",
+		isset(\$data['url_id'])				?\$data['url_id']:"#",
+		isset(\$data['video'])				?\$data['video']:"",
+		isset(\$data['audio'])				?\$data['audio']:"",
+		isset(\$data['embed'])				?\$data['embed']:"",
+		isset(\$data['campo_a'])			?\$data['campo_a']:"",
+		isset(\$data['campo_b'])			?\$data['campo_b']:"",
+		isset(\$data['campo_c'])			?\$data['campo_c']:"",
+		isset(\$data['campo_d'])			?\$data['campo_d']:"",
+		isset(\$data['campo_e'])			?\$data['campo_e']:"",
+		isset(\$data['campo_f'])			?\$data['campo_f']:"",
+		isset(\$data['perildo'])			?\$data['perildo']:"0",
+		isset(\$data['valor'])				?\$_this->contas->form_read(\$data['valor']):"0,00",
+		isset(\$data['created'])			?\$data['created']->format('d-m-Y'):"",
+		isset(\$data['alias'])				?\$data['alias']:'',
+		isset(\$data['description'])		?\$data['description']:'',
+		isset(\$data['preview'])			?\$data['preview']:'',
+		isset(\$data['data_corrent'])		?\$data['data_corrent']:'',
+		isset(\$data['data_table'])			?\$data['data_table']:'',
+		isset(\$data['created'])			?\$data['created']->format('d'):"",
+		isset(\$data['created'])			?\$_this->translate(strtoupper(\$data['created']->format('M'))):"",
+		isset(\$data['created'])			?\$data['created']->format('Y'):"",
+		isset(\$data['rota'])				?\$data['rota']:"#",
+		isset(\$data['link'])				?\$data['link']:"#",
+		sset(\$data['last'])				?\$data['last']:"#",
+		\$col=="2"?"2":"1");
+		return str_replace(\$aFind,\$aSubs,\$linha);
+
+   }
+
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-class-helper-replace</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

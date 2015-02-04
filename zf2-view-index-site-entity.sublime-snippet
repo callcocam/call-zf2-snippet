@@ -1,0 +1,167 @@
+<snippet>
+	<content><![CDATA[
+
+<?php
+\$router = \$this->router();
+\$params = \$router['router']->getParams();
+\$controler= \$router['router']->getMatchedRouteName();
+\$params['page']=isset(\$_GET['page'])?\$_GET['page']:"1";
+/*
+        Caminho:CALLConfig\View\Helper\Config
+        Comentario:Pega as configurações do site
+        */
+if(\$this->config): ?>
+    <?php  
+         error_reporting(E_ALL);ini_set('display_errors', 'On');
+         //primeiro pgamos o modulo relacionado ao site o modulo principal
+        \$modulo=\$this->em->getRepository('CALLAcl\Entity\Resources')->findOneBy(array('url'=>\$this->config->getSite()));
+       //depois pegamos os plugins
+        \$repository=\$this->em->getRepository('CALLPlugin\Entity\Plugin')->findBy(array('state'=>'0','tabelaId'=>\$modulo->getId()),array('ordering'=>"ASC"));
+        //pegamos a pagina pelo action da url
+         \$paginas=\$this->em->getRepository('CALLPlugin\Entity\Paginas')->findOneBy(array('url'=>\$params['action']));
+         //se existir uma pagina carrega o esqueleto da pagina
+        if (\$paginas):
+            \$pagina=\$paginas->getDescription();
+        //verifica s eexiste plugins
+         if(\$repository):
+         foreach (\$repository as \$value) :
+        \$html="";
+        //pega a entity que recebeu o nome de um plugin
+         \$helper=\$value->getTitle();
+         //seta o state como fase
+            \$state=false;
+           //verifaca se o plugin e para ser visto na pagina corrente
+            \$pagina_items=\$this->em->getRepository('CALLPlugin\Entity\PaginasAcesso')->findBy(array(
+                    'pluginId'=>\$value->getId(),
+                    'paginaId'=>\$paginas->getId()));
+
+        if(\$pagina_items){ 
+        try {
+            \$condicao=array();
+            //pega o nome da funçao que usada pelo doctrine para fazer select find, findBy, findOneBy ou findAll
+            \$find=\$value->getSelecionar();
+            //divide o campo de parametros em um array caracter divisor |
+            \$parametros=explode('|', \$value->getParam());
+            //divide o campo de value em um array caracter divisor | ele sera o valor de cada parametro acima
+            \$valores=explode('|', \$value->getValue());
+            //seta um limit de cem mil registros
+              \$limit="100000";
+              //verifica se existe parametros
+            if(is_array(\$parametros))
+            {
+                //monta a condição de busca
+                foreach (\$parametros as \$key => \$value_condicao) {
+                    if(\$value_condicao=="assetId")
+                    \$condicao[\$value_condicao]=md5(\$valores[\$key]);
+                    elseif(\$valores[\$key]=="id")
+                    \$condicao[\$value_condicao]=\$params[\$valores[\$key]];
+                  elseif(\$value_condicao=="limit")
+                        \$limit=\$valores[\$key];
+                    else
+                    \$condicao[\$value_condicao]=\$valores[\$key];
+                }
+            }
+            else
+            {
+                \$condicao=array('state'=>'0',\$value->getParam()=>md5(\$value->getValue()));
+            }
+            //pega os dados do banco com a entity passada na helper ex:\$helper=CALLMenu\Entity\Menu
+            \$repository_item=\$this->em->getRepository(\$helper)->\$find(\$condicao,array('ordering'=>'ASC'),\$limit);
+         //seta o data corrente como vasio
+            \$data_corrent="";
+            //verifica se encontrou informacoes cadastrada na tabela corrente
+            if(\$repository_item):
+                \$html=\$this->${1:Helper}Helper()->\$find(\$this,\$repository_item,\$value,\$html,\$params);
+            endif;
+            //pega o atalho ou informação que sera substituida pelas informações vindas do banco
+                \$aFind = array(
+                         \$value->getAtalho());
+             //carrega os dados substituido e pronto
+                \$aSubs = array(
+                        \$html);
+              //substitui os apelidos da paagina pelos dados vindons do banco
+                \$pagina=str_replace(\$aFind,\$aSubs, \$pagina);
+                \$html=""; 
+    } catch (\Exception \$e) {
+        
+               \$aFind = array(
+                        \$value->getAtalho());
+                \$aSubs = array(
+                        \$value->getDescription());
+                \$pagina=str_replace(\$aFind,\$aSubs, \$pagina);
+                \$html="";  
+    }}
+        
+         endforeach;
+         endif;
+         //informações colocadas manualmente são informacoes q estão presente na maioria dos sites
+         \$linha="<label><span class='text-form'>{label_rotulo} </span>{campo_fild}</label>";
+         \$form_contato=\$this->${1}ContatoHelper()->ReadContato(\$this,\$controler,\$params,\$linha);
+            \$aFind = array(
+                    "{phone}",
+                    "{email}",
+                    "{numero}",
+                    "{endereco}",
+                    "{complemento}",
+                    "{bairro}",
+                    "{cep}",
+                    "{city}",
+                    "{uf}",
+                    "{xpais}",
+                    "{icone}",
+                    "{fantasia}",
+                    "{contato}",
+                    "{created_by}",
+                    "{site}",
+                    "{messagem}",
+                    "{url_home}",
+                    "{HAEDAR_PRECOS_LABEL}",
+                     "Frequently Asked Questions",
+                     "List of Questions",
+                     "Contact Form",
+                     "Our Contacts",
+                     "More Details",
+                     "Testimonials");
+                \$aSubs = array(
+                    \$this->config->getPhone(),
+                    \$this->config->getEmail(),
+                    \$this->config->getNumero(),
+                    \$this->config->getEndereco(),
+                    \$this->config->getComplemento(),
+                    \$this->config->getBairro(),
+                    \$this->config->getAddressCity()->getCep(),
+                    \$this->config->getAddressCity()->getDescription(),
+                    \$this->config->getAddressCity()->getUf(),
+                    \$this->config->getAddressCity()->getXpais(),
+                    \$this->config->getImages(),
+                    \$this->config->getFantasia(),
+                    \$form_contato,
+                    \$this->translate("HEADER_BY_LABEL"),
+                    \$this->translate("HEADER_SITE_LABEL"),
+                    \$this->messages(\$this),
+                    \$this->url('services'),
+                    \$this->translate("Nossos preços"),
+                    \$this->translate("Perguntas frequentes"),
+                    \$this->translate("Lista de questões"),
+                    \$this->translate("Formulario de contato"),
+                    \$this->translate("Localização"),
+                    \$this->translate("Mais Detalhes"),
+                    \$this->translate("Comentarios"));
+
+
+                    \$pagina=str_replace(\$aFind,\$aSubs, \$pagina);
+                    echo  \$pagina;
+         endif;
+        ?>
+<?php else: ?>
+<div class="alert alert-danger"><input type="radio" onselect="">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <strong>Anteção</strong> Não existe uma cofguração valida acesse a administração e defina uma configuração padrão.
+</div>
+<?php endif; ?>
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-view-index-site-entity</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -79,6 +79,7 @@ abstract class AbstractController extends AbstractActionController {
 		'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
 		'caixa'=>\$this->caixa,
 		'config'=>\$this->config,
+		'em'=>\$this->getEm(),
 		'user'=>\$this->user));
 		\$this->layout(\$this->layout_template);
 		\$view->setTemplate(\$this->templete);
@@ -130,6 +131,7 @@ abstract class AbstractController extends AbstractActionController {
 					'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
 					'caixa'=>\$this->caixa,
 					'config'=>\$this->config,
+					'em'=>\$this->getEm(),
 					'user'=>\$this->user));
 			\$this->layout(\$this->layout_template);
 			\$view->setTemplate(\$this->templete);
@@ -169,6 +171,7 @@ abstract class AbstractController extends AbstractActionController {
 					'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
 					'caixa'=>\$this->caixa,
 					'config'=>\$this->config,
+					'em'=>\$this->getEm(),
 					'user'=>\$this->user));
 			\$this->layout(\$this->layout_template);
 			\$view->setTemplate(\$this->templete);

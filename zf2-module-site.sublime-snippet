@@ -28,6 +28,9 @@ class Module
               'CALL${1}\Service\\${2}Service' => function(\$em) {
                    return new ${1}Service(\$em->get('\Doctrine\ORM\EntityManager'));
             },
+            'CALL${1}\Service\HeaderService' => function(\$em) {
+                   return new \CALL${1}\Service\HeaderService(\$em->get('\Doctrine\ORM\EntityManager'));
+            },
          'CALL${1}\Form\PluginForm' => function(\$sm)
                 {
                 \$em = \$sm->get('Doctrine\ORM\EntityManager');
@@ -43,7 +46,9 @@ class Module
                 //opciona se ouver ordering
                 \$repo_ordering =  \$em->getRepository('CALLPlugin\Entity\Plugin');
                 \$ordering = \$repo_ordering->fetchOrder("${3}-plugin");
-                return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$rota,\$ordering,\$paginas);
+                \$con=\$sm->get('config');
+                \$entitys=\$con['plugis_entity'];
+                return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$rota,\$ordering,\$paginas,\$entitys);
         		},
 		'CALL${1}\Form\MenuForm' => function(\$sm)
 		    {

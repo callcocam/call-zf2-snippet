@@ -1,0 +1,53 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace CALL${1:Namespace}\View\Helper;
+
+use Zend\View\Helper\AbstractHelper;
+use Doctrine\ORM\EntityManager;
+
+class ${1}ContatoHelper extends AbstractHelper {
+     protected \$em;
+    protected \$form;
+    public function __construct(EntityManager \$em,\$sl)
+    {
+        \$this->em = \$em;
+        \$this->form=\$sl->get('FormElementManager')->get('CALLContato\Form\ContatositeForm');
+        }
+
+        public function ReadContato(\$_this,\$rota,\$params,\$description)
+            {
+            \$array=array(
+            "linha"=>\$description,
+            'campos'=>array(
+            "id"                => array("type"=>"hidden",'class'=>'','colunas'=>'6','value'=>isset(\$params['id'])?\$params['id']:"0"),
+            "alias"             => array("type"=>"hidden",'class'=>'','colunas'=>'8','value'=>'admin'),
+            "title"             => array("type"=>"text",'class'=>'','colunas'=>'6',"id"=>'contact-name'),
+            "email"             => array("type"=>"text",'class'=>'','colunas'=>'9','data-error-invalid'=>'Invalid email address','id'=>'contact-mail'),
+            "description"       => array("type"=>"textarea",'class'=>'','colunas'=>'12','rows'=>"6"),
+            "created"           => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>date("Y-m-d H:i:s")),
+            "rota"              => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$rota),
+            "action"            => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$params['action']),
+            "latitude"          => array("type"=>"hidden",'class'=>'','colunas'=>"4",'value'=>\$_this->config->getLatitude()),
+            "longetude"         => array("type"=>"hidden",'class'=>'','colunas'=>"4",'value'=>\$_this->config->getLongetude()),
+            "asset_id"          => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$rota),
+            "submit"            => array("type"=>"submit",'class'=>'btns','colunas'=>'12','value'=>'Enviar',"style"=>"margin-top:5px;"),
+            ) 
+            );
+            //fim da opção 02
+            //monta o formulario
+            //Para usar um form diferente substitua o caminho ['CALLContato\Form\ContatositeForm'] pelo o caminho desejado (opcional)
+             \$formulario_options=array('action'=>\$_this->url(\$rota,array('action' => 'agro-site-contato')),
+                            'class'=>'',
+                            'id'=>'contact-form',
+                            'name'=>'contactForm');
+            return \$_this->ContatoHelper()->getOpenform(\$_this,\$array,\$formulario_options,'CALLContato\Form\ContatositeForm');
+          }
+
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-helper-contato</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
