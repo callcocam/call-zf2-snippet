@@ -4,7 +4,7 @@
 namespace CALL${1:NameSpace};
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use CALL${1}\Service\\${2:Classs}Service;
+//use CALL${1}\Service\\${2:Classs}Service;
 class Module
 {
    public function getConfig()
@@ -25,12 +25,10 @@ class Module
  public function getServiceConfig() {
         return array(
         'factories' => array(
-              'CALL${1}\Service\\${2}Service' => function(\$em) {
-                   return new ${1}Service(\$em->get('\Doctrine\ORM\EntityManager'));
-            },
-            'CALL${1}\Service\HeaderService' => function(\$em) {
-                   return new \CALL${1}\Service\HeaderService(\$em->get('\Doctrine\ORM\EntityManager'));
-            },
+             // 'CALL${1}\Service\\${2}Service' => function(\$em) {
+                   //return new ${1}Service(\$em->get('\Doctrine\ORM\EntityManager'));
+           // },
+            
          'CALL${1}\Form\PluginForm' => function(\$sm)
                 {
                 \$em = \$sm->get('Doctrine\ORM\EntityManager');
@@ -50,7 +48,27 @@ class Module
                 \$entitys=\$con['plugis_entity'];
                 return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$rota,\$ordering,\$paginas,\$entitys);
         		},
-		'CALL${1}\Form\MenuForm' => function(\$sm)
+        'CALL${1}\Form\CategoriaForm' => function(\$sm)
+                {
+                \$em = \$sm->get('Doctrine\ORM\EntityManager');
+                \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+                \$parent = \$repo->fetchParent();
+                \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+                \$repoCategory = \$em->getRepository('CALLCategoria\Entity\Categoria');
+                \$parentCategory = \$repoCategory->fetchOrder(\$rota);
+                return new \CALLCategoria\Form\CategoriaForm('Categoria',\$parent,\$parentCategory);
+                },
+         'CALL${1}\Form\MarcaForm' => function(\$sm)
+                {
+                    \$em = \$sm->get('Doctrine\ORM\EntityManager');
+                    \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+                    \$parent = \$repo->fetchParent();
+                    \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+                    \$repoMarca = \$em->getRepository('CALLMarca\Entity\Marca');
+                    \$parentMarca = \$repoMarca->fetchOrder(\$rota);
+                    return new \CALLMarca\Form\MarcaForm('Marca',\$parent,\$parentMarca);
+                },
+     	'CALL${1}\Form\MenuForm' => function(\$sm)
 		    {
 		        \$em = \$sm->get('Doctrine\ORM\EntityManager');
 		        \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
@@ -88,22 +106,7 @@ class Module
                                         \$em = \$locator->get('Doctrine\ORM\EntityManager');
                                         return new View\Helper\\${1}Helper(\$em);
                                         },
-                               '${1}MenuHelper' => function (\$sm) {
-                                        \$locator = \$sm->getServiceLocator();
-                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
-                                        return new View\Helper\\${1}MenuHelper(\$em);
-                                        },
-                               '${1}FooterHelper' => function (\$sm) {
-                                        \$locator = \$sm->getServiceLocator();
-                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
-                                        return new View\Helper\\${1}FooterHelper(\$em);
-                                        },
-                               '${1}HeaderHelper' => function (\$sm) {
-                                        \$locator = \$sm->getServiceLocator();
-                                        \$em = \$locator->get('Doctrine\ORM\EntityManager');
-                                        return new View\Helper\\${1}HeaderHelper(\$em);
-                                        },
-                               '${1}ContatoHelper' => function (\$sm) {
+                            '${1}ContatoHelper' => function (\$sm) {
                                         \$locator = \$sm->getServiceLocator();
                                         \$em = \$locator->get('Doctrine\ORM\EntityManager');
                                         return new View\Helper\\${1}ContatoHelper(\$em,\$locator);

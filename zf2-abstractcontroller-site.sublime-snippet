@@ -15,14 +15,13 @@
 namespace CALL${1:NameSpace}\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Paginator\Paginator;
-use Zend\Paginator\Adapter\ArrayAdapter;
+//use Zend\Paginator\Paginator;
+//use Zend\Paginator\Adapter\ArrayAdapter;
 use Base\Model\Contas;
 use Zend\View\Model\ViewModel;
 use Zend\Authentication\AuthenticationService;
 use  Zend\Authentication\Storage\Session as SessionStorage;
 use Zend\View\Model\JsonModel;
-use CALLNfe\NFe\ToolsNFePHP;
 use Base\View\Helper\GeralHelper;
 
 abstract class AbstractController extends AbstractActionController {
@@ -205,9 +204,9 @@ abstract class AbstractController extends AbstractActionController {
 
 	public function getConfig(\$site='')
 	{
-		//\$this->acessos=\$this->getAcesso();
+		
 		//pegamos os dados da empresa pelo a empresa que o usuario esta cadastrado
-		\$service=\$this->getEm()->getRepository("CALLConfiguracao\Entity\ConfiguracaoList");
+		\$service=\$this->getEm()->getRepository("CALLSites\Entity\SitesList");
 		//salvamos na var config
 		\$this->config=\$service->findOneBy(array('site'=>\$site));
 		return \$this->config;

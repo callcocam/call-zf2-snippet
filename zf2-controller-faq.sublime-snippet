@@ -1,0 +1,46 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace ${1:Packpage}\Controller;
+
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+
+class FaqController extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity          = 'CALLFaq\Entity\Faq';
+        \$this->service         = 'CALLFaq\Service\FaqService';
+        \$this->form            = 'CALLFaq\Form\FaqForm';
+        \$this->controller      = "${2:rota}-faq";
+        \$this->route           = "${2:rota}-faq";
+        \$this->templete        ="/call-faq/index/index";
+        \$this->action          =array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+        //setamos o templete
+        \$this->templete    ="/call-faq/index/index";
+        return parent::listarAction();
+    }
+    public function inserirAction()
+    {   \$this->action      =array('action'=>"inserir");
+        \$this->templete    ="/call-faq/index/editar";
+        return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+        \$this->action      =array('action'=>"inserir");
+        \$this->templete    ="/call-faq/index/editar";
+        return parent::editarAction();
+    }
+   
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-controller-faq</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

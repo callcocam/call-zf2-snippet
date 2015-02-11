@@ -1,46 +1,46 @@
 <snippet>
 	<content><![CDATA[
 <?php
-namespace  ${1:this}\Controller;
+namespace ${1:Packpage}\Controller;
 
 use Base\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
 
-class HeaderController extends AbstractController
+class ServicoController extends AbstractController
 {
 
     public function __construct() {
-        \$this->entity = 'CALLHeader\Entity\Header';
-        \$this->service = 'CALLHeader\Service\HeaderService';
-        \$this->form = 'CALLHeader\Form\HeaderForm';
-        \$this->controller = "${2:rota}-header";
-        \$this->route = "${2}-header";
-        \$this->templete="/call-header/index/index";
+        \$this->entity = 'CALLServico\Entity\Servico';
+        \$this->service = 'CALLServico\Service\ServicoService';
+        \$this->form = 'CALLServico\Form\ServicoForm';
+        \$this->controller = "${2:rota}-servico";
+        \$this->route = "${2:rota}-servico";
+        \$this->templete="/call-servico/index/index";
         \$this->action=array('action'=>'index');
     }
 
     public function indexAction()
     {
         //setamos o templete
-        \$this->templete="/call-header/index/index";
+        \$this->templete="/call-servico/index/index";
         return parent::listarAction();
     }
     public function inserirAction()
     {   \$this->action=array('action'=>"inserir");
-        \$this->templete="/call-header/index/editar";
+        \$this->templete="/call-servico/index/editar";
         return parent::inserirAction();
     }
     public function editarAction()
     {
         \$this->action=array('action'=>"inserir");
-        \$this->templete="/call-header/index/editar";
+        \$this->templete="/call-servico/index/editar";
         return parent::editarAction();
     }
    
 }
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>zf2-header-controller</tabTrigger>
+	<tabTrigger>zf2-controller-servico</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<!-- <scope>source.python</scope> -->
 </snippet>

@@ -1,7 +1,7 @@
 <snippet>
 	<content><![CDATA[
 <?php
-namespace CALL${1:Namespace}\View\Helper;
+namespace CALL${1:Packpage}\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Doctrine\ORM\EntityManager;
@@ -15,36 +15,60 @@ class ${1}ContatoHelper extends AbstractHelper {
         \$this->form=\$sl->get('FormElementManager')->get('CALLContato\Form\ContatositeForm');
         }
 
-        public function ReadContato(\$_this,\$rota,\$params,\$description)
-            {
-            \$array=array(
-            "linha"=>\$description,
-            'campos'=>array(
-            "id"                => array("type"=>"hidden",'class'=>'','colunas'=>'6','value'=>isset(\$params['id'])?\$params['id']:"0"),
-            "alias"             => array("type"=>"hidden",'class'=>'','colunas'=>'8','value'=>'admin'),
-            "title"             => array("type"=>"text",'class'=>'','colunas'=>'6',"id"=>'contact-name'),
-            "email"             => array("type"=>"text",'class'=>'','colunas'=>'9','data-error-invalid'=>'Invalid email address','id'=>'contact-mail'),
-            "description"       => array("type"=>"textarea",'class'=>'','colunas'=>'12','rows'=>"6"),
-            "created"           => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>date("Y-m-d H:i:s")),
-            "rota"              => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$rota),
-            "action"            => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$params['action']),
-            "latitude"          => array("type"=>"hidden",'class'=>'','colunas'=>"4",'value'=>\$_this->config->getLatitude()),
-            "longetude"         => array("type"=>"hidden",'class'=>'','colunas'=>"4",'value'=>\$_this->config->getLongetude()),
-            "asset_id"          => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$rota),
-            "submit"            => array("type"=>"submit",'class'=>'btns','colunas'=>'12','value'=>'Enviar',"style"=>"margin-top:5px;"),
-            ) 
-            );
-            //fim da opção 02
-            //monta o formulario
-            //Para usar um form diferente substitua o caminho ['CALLContato\Form\ContatositeForm'] pelo o caminho desejado (opcional)
-             \$formulario_options=array('action'=>\$_this->url(\$rota,array('action' => 'agro-site-contato')),
-                            'class'=>'',
-                            'id'=>'contact-form',
-                            'name'=>'contactForm');
-            return \$_this->ContatoHelper()->getOpenform(\$_this,\$array,\$formulario_options,'CALLContato\Form\ContatositeForm');
-          }
+    public function ReadContato(\$_this,\$rota,\$params,\$description)
+    {
+    //voce pode usar linhas perssonalizadas para o formulario de contato
+    \$linha_name='<div class="form-group">
+    <label class="control-label" for="contact-name">{label_rotulo}</label>
+    <div class="controls">{campo_fild}
+    <i class="fa fa-user"></i>
+    </div>
+    </div><!-- End name input -->';
 
-}
+    \$linha_email='<div class="form-group">
+    <label class="control-label" for="contact-mail">{label_rotulo}</label>
+    <div class=" controls">{campo_fild}
+    <i class="fa fa-envelope"></i>
+    </div>
+    </div><!-- End email input -->';
+
+    \$linha_textarea='<div class="form-group">
+    <label class="control-label" for="contact-message">{label_rotulo}</label>
+    <div class="controls">
+    {campo_fild}
+    <i class="fa fa-comment"></i>
+    </div>
+    </div><!--<i class="fa fa-location-arrow"></i> End textarea -->';
+    \$linha_btn='<p>{campo_fild}</p><input type="hidden" name="submitted" id="submitted" value="true" />';
+
+    \$array=array(
+    "linha"=>\$description,
+    'campos'=>array(
+    "id"                => array("type"=>"hidden",'class'=>'','colunas'=>'6','value'=>isset(\$params['id'])?\$params['id']:"0"),
+    "alias"             => array("type"=>"hidden",'class'=>'','colunas'=>'8','value'=>'admin'),
+    "title"             => array("linha"=>\$linha_name,"type"=>"text",'class'=>'form-control requiredField label_better','colunas'=>'6',"id"=>'contact-name',"data-error-empty"=>"Please enter your name"),
+    "email"             => array("linha"=>\$linha_email,"type"=>"text",'class'=>'form-control requiredField label_better','colunas'=>'9','data-error-invalid'=>'Invalid email address','id'=>'contact-mail'),
+    "description"       => array("linha"=>\$linha_textarea,"type"=>"textarea",'class'=>'form-control requiredField label_better',"placeholder"=>"Your message",'colunas'=>'12','rows'=>"6","data-error-empty"=>"Please enter your message","id"=>"contact-message"),
+    "created"           => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>date("Y-m-d H:i:s")),
+    "rota"              => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$rota),
+    "action"            => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$params['action']),
+    "latitude"          => array("type"=>"hidden",'class'=>'','colunas'=>"4",'value'=>\$_this->config->getLatitude()),
+    "longetude"         => array("type"=>"hidden",'class'=>'','colunas'=>"4",'value'=>\$_this->config->getLongetude()),
+    "asset_id"          => array("type"=>"hidden",'class'=>'','colunas'=>'4','value'=>\$rota),
+    "submit"            => array("linha"=>\$linha_btn,"type"=>"submit",'class'=>'btn btn-qubico btn-block','colunas'=>'12','value'=>'Enviar',"data-error-message"=>"Error!","data-sending-message"=>"Enviando...","data-ok-message"=>"Menssagem recebida.."),
+    ) 
+    );
+    //fim da opção 02
+    //monta o formulario
+    //Para usar um form diferente substitua o caminho ['CALLContato\Form\ContatositeForm'] pelo o caminho desejado (opcional)
+    \$formulario_options=array('action'=>\$_this->url(\$rota,array('action' => \$rota.'-contato-site')),
+    'class'=>'col-sm-6 col-sm-offset-3',
+    'id'=>'contact-form',
+    'name'=>'contactForm');
+    return \$_this->ContatoHelper()->getOpenform(\$_this,\$array,\$formulario_options,'CALLContato\Form\ContatositeForm');
+    }
+
+    }
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>zf2-helper-contato</tabTrigger>

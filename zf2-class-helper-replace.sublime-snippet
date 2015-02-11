@@ -16,12 +16,16 @@ class  ${2:Class}Helper extends AbstractHelper {
 public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html,\$params)
     {
 		
-		\$data['data_corrent']="";
-		\$data['data_table']="";
-		\$data['last']="last";
-		\$col="0";
+		\$data_corrent="active";
+        \$data_table="";
+        \$last="right";
+        \$col="0";
 		foreach (\$repository_item as \$key => \$value_item) {
 		\$data=\$value_item->toArray();
+		\$data['data_table']=\$data_table;
+		\$data['data_corrent']=\$data_corrent;
+        \$data['last']=\$last;
+        \$data['col']=\$col;
 		if(\$plugin->getRota()=="#"):
 		if (isset(\$data['url'])) {
 		\$data['url']=\$_this->url('${3:rota}',array('controller'=>'${3}','action'=>\$value_item->getUrl()));
@@ -35,19 +39,56 @@ public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html
 		else:
 		\$data['rota']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota()));
 		endif;
-
+		if(isset(\$data['video']))
+        {
+            //verifica se o data video não esta vasio
+            if(!empty(\$data['video'])){
+           //instancia a classe que trata o a url do video
+            \$youtubeDetails=\$_this->YoutubeHelper();
+            //pega a imagem do video
+            \$video_img=$youtubeDetails->getImages(\$data['video']);
+            //carrega na data thumbnal
+            \$data['thumbnal']=\$video_img['small'];
+            //pega o caminho do embed do video
+            \$data['embed']=\$youtubeDetails->getEmbed(\$data['video']);
+            }
+        }
 		\$data['url_id']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota(),'id'=>\$value_item->getId()));
+
+		//tratar a categoria e a marca
+        if(isset(\$data['catid']))
+        {
+        	//verifica se a catid e um object
+        	if(is_object(\$data['catid']))
+        	{	//se for carrega o title q esta contida catid object
+        		if(\$data['catid']->__isInitialized__)
+        		\$data['catid']=\$data['catid']->getTitle();
+        	}
+        }
+
+         //tratar a marca
+        if(isset(\$data['marca']))
+        {
+        	//verifica se a catid e um object
+        	if(is_object(\$data['marca']))
+        	{
+        		//se for carrega o title q esta contida catid object
+        		if(\$data['marca']->__isInitialized__)
+        		\$data['marca']=\$data['marca']->getTitle();
+        	}
+        }
+
 		\$col++;
-		if(\$data['data_table']=="alpha"):
-			\$data['data_table']="";
+		if(\$data_table=="alpha"):
+			\$data_table="";
 		elseif(\$data_table==""):
-			\$data['data_table']="omega";
+			\$data_table="omega";
 		else:
-			\$data['data_table']="alpha";
+			\$data_table="alpha";
 			\$plugin->getLinha(\$plugin->getLinha());
 		endif;
-		\$html.=$this->tratamento(\$_this,\$data,\$plugin->getLinha());
-		\$data['data_corrent']="";
+		\$html.=\$this->tratamento(\$_this,\$data,\$plugin->getLinha());
+		\$data_corrent="";
 		} 
 		return \$html;  
 
@@ -67,9 +108,48 @@ public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html
 		else:
 		\$data['rota']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota()));
 		endif;
-		\$data['data_corrent']="";
+		if(isset(\$data['video']))
+        {
+             //verifica se o data video não esta vasio
+            if(!empty(\$data['video'])){
+           //instancia a classe que trata o a url do video
+            \$youtubeDetails=\$_this->YoutubeHelper();
+            //pega a imagem do video
+            \$video_img=$youtubeDetails->getImages(\$data['video']);
+            //carrega na data thumbnal
+            \$data['thumbnal']=\$video_img['small'];
+            //pega o caminho do embed do video
+            \$data['embed']=\$youtubeDetails->getEmbed(\$data['video']);
+            }
+        }
+
+        //tratar a categoria e a marca
+        if(isset(\$data['catid']))
+        {
+        	//verifica se a catid e um object
+        	if(is_object(\$data['catid']))
+        	{	//se for carrega o title q esta contida catid object
+        		if(\$data['catid']->__isInitialized__)
+        		\$data['catid']=\$data['catid']->getTitle();
+        	}
+        }
+
+         //tratar a marca
+        if(isset(\$data['marca']))
+        {
+        	//verifica se a catid e um object
+        	if(is_object(\$data['marca']))
+        	{
+        		//se for carrega o title q esta contida catid object
+        		if(\$data['marca']->__isInitialized__)
+        		\$data['marca']=\$data['marca']->getTitle();
+        	}
+        }
+
+        \$data['col']="";
 		\$data['url_id']=\$_this->url('${3}',array('controller'=>'${3}','action'=>\$plugin->getRota(),'id'=>\$value_item->getId()));
-		\$html.=$this->tratamento(\$_this,\$data,\$plugin->getLinha());
+		\$html.=\$this->tratamento(\$_this,\$data,\$plugin->getLinha());
+		\$data_corrent="";
 		return \$html;  
 
     }
@@ -79,10 +159,12 @@ public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html
 		\$aFind = array(
 		'{id}',
 		'{catid}',
+		'{marca}',
 		'{images}',
 		'{images_t}',
 		'{images_g}',
-		'{carrousel_images}',
+		'{carrosel_t}',
+		'{carrosel_g}',
 		'{title}',
 		'{subtitle}',
 		'{url}',
@@ -114,11 +196,13 @@ public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html
 
 		\$aSubs = array(
 		isset(\$data['id'])					?\$data['id']:'',
-		isset(\$data['catid'])				?"":'',
+		isset(\$data['catid'])				?\$data['catid']:'',
+		isset(\$data['marca'])				?\$data['marca']:'',
 		isset(\$data['images'])				?\$data['images']:'',
 		isset(\$data['images_t'])			?\$data['images_t']:'',
 		isset(\$data['images_g'])			?\$data['images_g']:'',
-		isset(\$data['carrousel_images'])	?\$data['carrousel_images']:'',
+		isset(\$data['carrosel_t'])			?\$data['carrosel_t']:'',
+		isset(\$data['carrosel_g'])			?\$data['carrosel_g']:'',
 		isset(\$data['title'])				?\$data['title']:'',
 		isset(\$data['subtitle'])			?\$data['subtitle']:'',
 		isset(\$data['url'])				?\$data['url']:"#",
@@ -145,8 +229,8 @@ public function findBy(\$_this,\$repository_item=array(),\$plugin=array(),\$html
 		isset(\$data['created'])			?\$data['created']->format('Y'):"",
 		isset(\$data['rota'])				?\$data['rota']:"#",
 		isset(\$data['link'])				?\$data['link']:"#",
-		sset(\$data['last'])				?\$data['last']:"#",
-		\$col=="2"?"2":"1");
+		isset(\$data['last'])				?\$data['last']:"#",
+		\$data['col']=="2"?"2":"1");
 		return str_replace(\$aFind,\$aSubs,\$linha);
 
    }

@@ -1,6 +1,5 @@
 <snippet>
 	<content><![CDATA[
-
 <?php
 \$router = \$this->router();
 \$params = \$router['router']->getParams();
@@ -97,6 +96,23 @@ if(\$this->config): ?>
          //informações colocadas manualmente são informacoes q estão presente na maioria dos sites
          \$linha="<label><span class='text-form'>{label_rotulo} </span>{campo_fild}</label>";
          \$form_contato=\$this->${1}ContatoHelper()->ReadContato(\$this,\$controler,\$params,\$linha);
+
+         \$array=\$this->ComentariosHelper()->getFormNewcomentario(\$linha,
+                                        \$controler,
+                                          \$params['action'],
+                                            \$controler."-comentarios-site",
+                                               \$parent_id,
+                                                  \$fild,
+                                                     \$this->config->getAlias(),
+                                                         \$this->config->getId());
+            
+        \$formulario_options=array('action'=>\$this->url(\$controler,
+            array('action' => \$controler.'-comentarios-site','id'=>\$parent_id)),
+            'class'=>'',
+            'id'=>'Form-comentario',
+            'name'=>'Form-comentario');
+        \$formulario_comentarios=\$this->ComentariosHelper()->getOpenform(\$this,\$array,\$formulario_options,\$controler);
+          
             \$aFind = array(
                     "{phone}",
                     "{email}",
@@ -111,17 +127,42 @@ if(\$this->config): ?>
                     "{icone}",
                     "{fantasia}",
                     "{contato}",
+                    "{form_coments}",
                     "{created_by}",
                     "{site}",
                     "{messagem}",
                     "{url_home}",
-                    "{HAEDAR_PRECOS_LABEL}",
-                     "Frequently Asked Questions",
-                     "List of Questions",
-                     "Contact Form",
-                     "Our Contacts",
-                     "More Details",
-                     "Testimonials");
+                    "HEADER_TITLE_SERVICO_LABEL",
+                    "HEADER_SUB_TITLE_SERVICO_LABEL",
+                    "BTN_CHECK_PRECOS",
+                    "HEADER_PORTFOLIO_TITLE_LABEL",
+                    "HEADER_PORTFOLIO_SUB_TITLE_LABEL",
+                    "BTN_ALL_CATEGORIAS",
+                    "HEADER_PRECOS_TITLE_LABEL",
+                    "HEADER_PRECOS_SUB_TITLE_LABEL",
+                    "HEADER_NEWS_TITLE_LABEL",
+                    "HEADER_NEWS_SUB_TITLE_LABEL",
+                    "HEADER_MANTENHA_CONTATO_TITLE_LABEL",
+                    "HEADER_MANTENHA_SUB_TITLE_CONTATO_LABEL",
+                    "HEADER_LAOCALIZACAO_LABEL",
+                    "HEADER_SEND_EMAIL_LABEL",
+                    "HEADER_PHONE_LABEL",
+                    "HEADER_DEIXE_UMA_MENSSAGEM_TITLE_LABEL",
+                    "HEADER_DEIXE_UMA_MENSSAGEM_SUB_TITLE_LABEL",
+                    "HEADER_MESSAGEM_PRODUTO_TITLE_LABEL",
+                    "HEADER_MESSAGEM_PRODUTO_SUBTITLE_LABEL",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                    'SEGUNDA_A_SEXTA',
+                    "SABADO",
+                    "Closed",
+                    "{ano}",
+                    "{mes}");
                 \$aSubs = array(
                     \$this->config->getPhone(),
                     \$this->config->getEmail(),
@@ -136,19 +177,42 @@ if(\$this->config): ?>
                     \$this->config->getImages(),
                     \$this->config->getFantasia(),
                     \$form_contato,
+                    \$formulario_comentarios,
                     \$this->translate("HEADER_BY_LABEL"),
                     \$this->translate("HEADER_SITE_LABEL"),
-                    \$this->messages(\$this),
-                    \$this->url('services'),
-                    \$this->translate("Nossos preços"),
-                    \$this->translate("Perguntas frequentes"),
-                    \$this->translate("Lista de questões"),
-                    \$this->translate("Formulario de contato"),
-                    \$this->translate("Localização"),
-                    \$this->translate("Mais Detalhes"),
-                    \$this->translate("Comentarios"));
-
-
+                    \$this->messages($this),
+                    \$this->url('hidrotur'),
+                    \$this->translate("HEADER_TITLE_SERVICO_LABEL"),
+                    \$this->translate("HEADER_SUB_TITLE_SERVICO_LABEL"),
+                    \$this->translate("BTN_CHECK_PRECOS"),
+                    \$this->translate("HEADER_PORTFOLIO_TITLE_LABEL"),
+                    \$this->translate("HEADER_PORTFOLIO_SUB_TITLE_LABEL"),
+                    \$this->translate("BTN_ALL_CATEGORIAS"),
+                    \$this->translate("HEADER_PRECOS_TITLE_LABEL"),
+                    \$this->translate("HEADER_PRECOS_SUBTITULO_LABEL"),
+                    \$this->translate("HEADER_NEWS_TITLE_LABEL"),
+                    \$this->translate("HEADER_NEWS_SUB_TITLE_LABEL"),
+                    \$this->translate("HEADER_MANTENHA_CONTATO_LABEL"),
+                    \$this->translate("HEADER_MANTENHA_SUBTITULO_CONTATO_LABEL"),
+                    \$this->translate("HEADER_LAOCALIZACAO_LABEL"),
+                    \$this->translate("HEADER_SEND_EMAIL_LABEL"),
+                    \$this->translate("HEADER_PHONE_LABEL"),
+                    \$this->translate("HEADER_DEIXE_UMA_MENSSAGEM_LABEL"),
+                    \$this->translate("HEADER_DEIXE_UMA_MENSSAGEM_SUBTITULO_LABEL"),
+                    \$this->translate("HEADER_MESSAGEM_PRODUTO_TITLE_LABEL"),
+                    \$this->translate("HEADER_MESSAGEM_PRODUTO_SUBTITLE_LABEL"),
+                    \$this->translate('Monday'),
+                    \$this->translate('Tuesday'),
+                    \$this->translate('Wednesday'),
+                    \$this->translate('Thursday'),
+                    \$this->translate('Friday'),
+                    \$this->translate('Saturday'),
+                    \$this->translate('Sunday'),
+                    \$this->translate('SEGUNDA_A_SEXTA'),
+                    \$this->translate('SABADO'),
+                    \$this->translate('Closed'),
+                    \$this->translate(strtoupper(date("M"))),
+                    \$this->translate(date("Y")));
                     \$pagina=str_replace(\$aFind,\$aSubs, \$pagina);
                     echo  \$pagina;
          endif;

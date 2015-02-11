@@ -54,7 +54,10 @@ class IndexController extends AbstractController
                 endif;
                 endif;
             }
-            return \$this->redirect()->toRoute("${3}",array('action'=>\$param));
+        //setamos o templete
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-${4}/index/index";
+        return parent::indexAction();
         }
 }
        ]]></content>

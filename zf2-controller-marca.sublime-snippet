@@ -1,46 +1,45 @@
 <snippet>
 	<content><![CDATA[
 <?php
-namespace  ${1:this}\Controller;
+namespace ${1:Packpage}\Controller;
 
 use Base\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
 
-class HeaderController extends AbstractController
+class MarcaController extends AbstractController
 {
 
     public function __construct() {
-        \$this->entity = 'CALLHeader\Entity\Header';
-        \$this->service = 'CALLHeader\Service\HeaderService';
-        \$this->form = 'CALLHeader\Form\HeaderForm';
-        \$this->controller = "${2:rota}-header";
-        \$this->route = "${2}-header";
-        \$this->templete="/call-header/index/index";
+        \$this->entity = 'CALLMarca\Entity\Marca';
+        \$this->service = 'CALLMarca\Service\MarcaService';
+        \$this->form = 'CALLMarca\Form\MarcaForm';
+        \$this->controller = "${2:rota}-marca";
+        \$this->route = "${2:rota}-marca";
+        \$this->templete="/call-marca/index/index";
         \$this->action=array('action'=>'index');
     }
 
     public function indexAction()
     {
         //setamos o templete
-        \$this->templete="/call-header/index/index";
+        \$this->templete="/call-marca/index/index";
         return parent::listarAction();
     }
     public function inserirAction()
     {   \$this->action=array('action'=>"inserir");
-        \$this->templete="/call-header/index/editar";
+        \$this->templete="/call-marca/index/editar";
         return parent::inserirAction();
     }
     public function editarAction()
     {
         \$this->action=array('action'=>"inserir");
-        \$this->templete="/call-header/index/editar";
+        \$this->templete="/call-marca/index/editar";
         return parent::editarAction();
     }
-   
 }
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>zf2-header-controller</tabTrigger>
+	<tabTrigger>zf2-controller-marca</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<!-- <scope>source.python</scope> -->
 </snippet>
