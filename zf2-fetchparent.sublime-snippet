@@ -1,0 +1,18 @@
+<snippet>
+	<content><![CDATA[
+	public function fetchParent(\$rota="${1:rota}")
+		{
+			\$entities = \$this->findBy(array('state'=>'0','assetId'=>md5(\$rota)));
+			\$array=array();
+			foreach(\$entities as \$entity)
+			{
+				\$array[\$entity->getId()]=trim(\$entity->getTitle());
+			}
+			return \$array;
+		}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-fetchparent</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,45 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace ${1:Packpge}\Controller;
+
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+
+class PrecosController extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity = 'CALLPrecos\Entity\Precos';
+        \$this->service = 'CALLPrecos\Service\PrecosService';
+        \$this->form = 'CALLPrecos\Form\PrecosForm';
+        \$this->controller = "${2:rota}-precos";
+        \$this->route = "${2:rota}-precos";
+        \$this->templete="/call-precos/index/index";
+        \$this->action=array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+        //setamos o templete
+        \$this->templete="/call-precos/index/index";
+        return parent::listarAction();
+    }
+    public function inserirAction()
+    {   \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-precos/index/editar";
+        return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-precos/index/editar";
+        return parent::editarAction();
+    }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-controller-precos</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

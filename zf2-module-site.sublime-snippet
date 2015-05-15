@@ -34,19 +34,24 @@ class Module
                 \$em = \$sm->get('Doctrine\ORM\EntityManager');
                 \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
                 \$parent = \$repo->fetchParent();
-        
-                \$repoResources = \$em->getRepository('CALLAcl\Entity\Resources');
-                 \$rota = \$repoResources->fetchPairs('id');
-        
-                //opciona se ouver ordering
+
+               \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+                //opciona se ouver paginas
                 \$repo_paginas =  \$em->getRepository('CALLPlugin\Entity\Paginas');
                 \$paginas = \$repo_paginas->fetchParent('getId','${3:rota}-paginas');
                 //opciona se ouver ordering
+               
                 \$repo_ordering =  \$em->getRepository('CALLPlugin\Entity\Plugin');
-                \$ordering = \$repo_ordering->fetchOrder("${3}-plugin");
-                \$con=\$sm->get('config');
-                \$entitys=\$con['plugis_entity'];
-                return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$rota,\$ordering,\$paginas,\$entitys);
+                \$ordering = \$repo_ordering->fetchOrder(\$rota);
+
+                 \$repo_entity = \$em->getRepository('CALLPlugin\Entity\Entidades');
+                 \$entity=\$repo_entity->fetchParent();
+
+                //pegar os sites
+                \$repo_Sites = \$em->getRepository('CALLSites\Entity\Sites');
+                \$parent_Sites = \$repo_Sites->fetchParent();
+
+                return new \CALLPlugin\Form\PluginForm('Plugin',\$parent,\$ordering,\$paginas,\$entity,\$parent_Sites);
         		},
         'CALL${1}\Form\CategoriaForm' => function(\$sm)
                 {
@@ -70,25 +75,30 @@ class Module
                 },
      	'CALL${1}\Form\MenuForm' => function(\$sm)
 		    {
-		        \$em = \$sm->get('Doctrine\ORM\EntityManager');
-		        \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
-		        \$parent = \$repo->fetchParent();
-		        \$category=array();
-		         \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
-		        //opcional se ouver categoria
-		        \$repo_category =\$em->getRepository('CALLCategoria\Entity\Categoria');
-		        \$category = \$repo_category->fetchParent('${3}-categoria');
-		
-		        //opcional se ouver categoria
-		        \$repo_menu = \$em->getRepository('CALLMenu\Entity\Menu');
-		        //opcional se ouver odering
-		        \$odering = \$repo_menu->fetchOrder(\$rota);
-		
-		        //opcional se ouver categoria
-		        \$repo_paginas = \$em->getRepository('CALLPlugin\Entity\Paginas');
-		        \$parent_paginas = \$repo_paginas->fetchParent('getUrl','${3}-paginas');
-		
-		        return new \CALLMenu\Form\MenuForm('Menu',\$parent,\$category,\$parent_paginas, \$odering);
+
+                \$em = \$sm->get('Doctrine\ORM\EntityManager');
+                \$repo = \$em->getRepository('CALLAcl\Entity\Roles');
+                \$parent = \$repo->fetchParent();
+                \$category=array();
+                 \$rota=\$sm->get('application')->getMvcEvent()->getRouteMatch()->getMatchedRouteName();
+                //opcional se ouver categoria
+                \$repo_category =\$em->getRepository('CALLCategoria\Entity\Categoria');
+                \$category = \$repo_category->fetchParent('${3}-categoria');
+        
+                //opcional se ouver categoria
+                \$repo_menu = \$em->getRepository('CALLMenu\Entity\Menu');
+                //opcional se ouver odering
+                \$odering = \$repo_menu->fetchOrder(\$rota);
+        
+                //opcional se ouver categoria
+                \$repo_paginas = \$em->getRepository('CALLPlugin\Entity\Paginas');
+                \$parent_paginas = \$repo_paginas->fetchParent('getId','${3}-paginas');
+        
+                //pegar os sites
+                \$parent_Sites=array();
+                \$repo_Sites = \$em->getRepository('CALLSites\Entity\Sites');
+                \$parent_Sites = \$repo_Sites->fetchParent();
+                return new \CALLMenu\Form\MenuForm('Menu',\$parent,\$category,\$parent_paginas,\$odering,\$parent_Sites);
 		    },
                                 
             ),

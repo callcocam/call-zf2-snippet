@@ -27,7 +27,7 @@ class Module
             'factories' => array(
                   '${1}\Service\\${2}Service' => function(\$em) {
                                   return new ${2}Service(\$em->get('\Doctrine\ORM\EntityManager'));
-                },
+                },//Atalho_Services
                 '${1}\Form\\${2}Form' => function(\$sm)
                         {
                             \$em = \$sm->get('Doctrine\ORM\EntityManager');
@@ -37,7 +37,7 @@ class Module
                             \$repoCategory = \$em->getRepository('${1}\Entity\\${2}');
                             \$parentCategory = \$repoCategory->fetchOrder(\$rota);
                             return new Form\\${2}Form('${2}',\$parent,\$parentCategory);
-                        },
+                        },//Atalho_form
             ),
         );
     }

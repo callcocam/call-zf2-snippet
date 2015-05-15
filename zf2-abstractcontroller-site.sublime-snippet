@@ -1,255 +1,353 @@
 <snippet>
 	<content><![CDATA[
 <?php
+
 /*
  * To change this license header, choose License Headers in Project Properties.
-* To change this template file, choose Tools | Templates
-* and open the template in the editor.
-*/
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 /**
  * Description of AbstractController
  *
  * @author Claudio
  */
-
-namespace CALL${1:NameSpace}\Controller;
+namespace CALL${1:Packpage}\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-//use Zend\Paginator\Paginator;
-//use Zend\Paginator\Adapter\ArrayAdapter;
+// use Zend\Paginator\Paginator;
+// use Zend\Paginator\Adapter\ArrayAdapter;
 use Base\Model\Contas;
 use Zend\View\Model\ViewModel;
 use Zend\Authentication\AuthenticationService;
-use  Zend\Authentication\Storage\Session as SessionStorage;
+use Zend\Authentication\Storage\Session as SessionStorage;
 use Zend\View\Model\JsonModel;
 use Base\View\Helper\GeralHelper;
+use JVKart\Service\KartProduct;
 
 abstract class AbstractController extends AbstractActionController {
-
 	protected \$em;
 	protected \$entity;
 	protected \$controller;
 	protected \$route;
 	protected \$action;
-	protected \$service;
+	protected \$service = 'CALL${1}\Service\HomeService';
 	protected \$form;
-	protected \$qtd_registro=100;
-	protected \$Query="";
+	protected \$qtd_registro = 100;
+	protected \$Query = "";
 	protected \$user;
-	protected \$terminal=false;
-	protected \$layout_template="layout/layout_${2:layout}";
-	protected \$templete="/call-admin/index/index";
-	protected \$sessao_usuario="Cliente_${2}";
+	protected \$terminal = false;
+	protected \$layout_template = "layout/layout_${2:rota}";
+	protected \$templete = "/call-admin/index/index";
+	protected \$sessao_usuario = "Cliente_${2}";
 	protected \$config;
-	protected \$nfe=NULL;
 	protected \$sl;
-	protected \$caixa;
 	protected \$data;
-	protected \$site="${2}";
-	public function onDispatch( \Zend\Mvc\MvcEvent \$e )
-	{
-		if(\$this->getConfig(\$this->site)){
-		\$this->getAuthService();
-		if(\$this->authservice->hasIdentity()){
-			\$param =\$this->params()->fromRoute('action','index');
-			//carregar os privilegios
-			\$acl = \$this->getServiceLocator()->get("CALLAcl\Permissions\Acl");
-			//verificar acesso
-			if(\$acl->isAllowed(\$this->user->getAccess(),\$this->route,strtolower(\$param)))
-			{
-				\$this->messages()->flashError("Acesso Negado, Contate o administrador!") ;
-				return \$this->redirect()->toRoute(\$this->config->getSite());
-			}
-		}
-
-		}else{
-
-		}
-		return parent::onDispatch( \$e );
+	protected \$site = "${2}";
+	protected \$pagina = "";
+	protected \$cart = "";
+	public function onDispatch(\Zend\Mvc\MvcEvent \$e) {
+			\$this->getConfig ( \$this->site );
+			\$this->getAuthService ();
+		return parent::onDispatch ( \$e );
 	}
 	abstract function __construct();
-
-
+	
 	public function indexAction() {
-
-	    \$view=new ViewModel(array(
-		'form'=>\$this->form,
-		'contas'=>\$this->SigaContas(),
-		'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
-		'caixa'=>\$this->caixa,
-		'config'=>\$this->config,
-		'em'=>\$this->getEm(),
-		'user'=>\$this->user));
-		\$this->layout(\$this->layout_template);
-		\$view->setTemplate(\$this->templete);
-		\$view->setTerminal(\$this->terminal);
-		return \$view;
-	}
-
-	public function inserirAction() {
-		//carrega o formulario
-		\$this->form =\$this->getForm();
-		\$request=\$this->getRequest();
-		//verifica se foi passado um post
-		if(\$request->isPost()){
-			//setamos os valores no formuario
-			\$this->data=\$this->SigaContas()->Convert_decimal(array_merge_recursive(
-					\$request->getPost()->toArray(),
-					\$request->getFiles()->toArray()));
-			//\$this->printAll(\$this->data);
-			\$this->form->setData(\$this->data);
-			if(\$this->form->isValid())//validamos o formulario
-			{
-				//se o formulario foi validado
-				\$service=\$this->getServiceLocator()->get(\$this->service);
-				\$this->data['pasta_caminho']=\$this->getRequest()->getServer('DOCUMENT_ROOT', false);
-				//salva no banco
-				if(\$service->save(\$this->data))
-				{
-					//Carrega a menssagem de resultado
-					\$this->messages()->flashSuccess('CADASTRADO COM SUCESSO!');
-					return \$this->redirect()->toRoute(\$this->route,\$this->action);}
-				}
-			else
-				{
-				\$erro=\$this->form->getMessages();
-				\$this->printAll(\$erro);
-				if (isset(\$erro)):
-				foreach (\$erro as \$key => \$value) {
-					foreach (\$value as \$value_i) {
-						\$this->messages()->flashError(\$key.": ".\$value_i);
-					}
-				}
-			endif;
-			}
-		}
-		\$this->messages()->info('MESSAGE_OBRIGATORIO_LABEL');
-		\$view=new ViewModel(array(
-					'form'=>\$this->form,
-					'contas'=>\$this->SigaContas(),
-					'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
-					'caixa'=>\$this->caixa,
-					'config'=>\$this->config,
-					'em'=>\$this->getEm(),
-					'user'=>\$this->user));
-			\$this->layout(\$this->layout_template);
-			\$view->setTemplate(\$this->templete);
-			\$view->setTerminal(\$this->terminal);
-		return \$view;
-	}
-
-	public function editarAction() {
-		//pegar o codigo passado pela url
-		\$param =(int)\$this->params()->fromRoute('id',0);
-		//verifica se foi passado um codigo valido
-		if(!\$param)
-		{
-			\$this->messages()->flashError("MESSAGE_NOTPOST_ERRO");
-			return \$this->redirect()->toRoute(\$this->route);
-		}
-		else {
-			//carrega o formulario
-			\$this->form = \$this->getForm();
-			//pega os dados do banco
-			\$repository=\$this->SigaContas()->Convert_float(\$this->getEm()->getRepository(\$this->entity)->find(\$param)->toArray());
-			//trata os dados das duas tabelas
-			foreach (\$repository as \$key => \$value) {
-
-				if(\$value instanceof \Datetime)
-					\$data[\$key]=\$value->format("Y/m/d");
-				else
-					\$data[\$key]=\$value;
-
-			}
-			\$this->messages()->info('MESSAGE_OBRIGATORIO_LABEL');
-			//carrega o form
-			\$this->form->setData(\$data);
-			\$view=new ViewModel(array(
-					'form'=>\$this->form,
-					'contas'=>\$this->SigaContas(),
-					'pasta'=>\$this->getRequest()->getServer('DOCUMENT_ROOT', false),
-					'caixa'=>\$this->caixa,
-					'config'=>\$this->config,
-					'em'=>\$this->getEm(),
-					'user'=>\$this->user));
-			\$this->layout(\$this->layout_template);
-			\$view->setTemplate(\$this->templete);
-			\$view->setTerminal(\$this->terminal);
-			return \$view;
-		}
-
-	}
-	public function excluirAction() {
-
-		\$request=\$this->getRequest();
-		if(\$request->isPost()){
-			\$this->data=\$request->getPost('id');
-			foreach (\$this->data as \$value) {
-				\$service=\$this->getServiceLocator()->get(\$this->service);
-				if(\$service->remove(array('id' => \$value)))
-				{
-
-				}
-			}
-		}
-		else {
-			\$this->messages()->flashError("MESSAGE_NOTPOST_ERRO");
-			return \$this->redirect()->toRoute(\$this->route);
-		}
-		\$this->messages()->flashSuccess("MESSAGE_PUBLICHED_SUCCESS");
-		return \$this->redirect()->toRoute(\$this->route);
-
-	}
-
-
-	public function getConfig(\$site='')
-	{
 		
-		//pegamos os dados da empresa pelo a empresa que o usuario esta cadastrado
-		\$service=\$this->getEm()->getRepository("CALLSites\Entity\SitesList");
-		//salvamos na var config
-		\$this->config=\$service->findOneBy(array('site'=>\$site));
-		return \$this->config;
+		// pegar id passado pela url
+		\$id = \$this->params ()->fromRoute ( 'id', "0" );
+		// pegar action passado pela url ou setada na action do controller q se extends desse controller
+		//as vezes e nessario mostrar uma outra pagina na mesma action dai setamos  a action do controller q se extends desse controller
+		//ex: a action acessada e ${2}, mas a url cadastrada na pagina e produto vamos pegar a pagina produto setada na action do controller q se extends desse controller
+		//e mostrar na pagina ${2}
+		\$action =\$this->action==""?\$this->params ()->fromRoute ( 'action', "index" ):\$action=\$this->action;
+
+		// pegamos o serviço
+		\$service = \$this->getServiceLocator ()->get ( 'CALL${1}\Service\\${1}Service' );
+			
+		// tratar todas informações vindas do banco de dados
+		// depois pegamos os plugins
+		\$repository = \$this->getEm()->getRepository ( 'CALLPlugin\Entity\Plugin' )->findBy ( array (
+				'state' => '0' 
+		), array (
+				'ordering' => "ASC" 
+		));
+		//pegamos a pagina pelo action da url e pelo style ou id do layout
+		//quando e criado uma cofiguração para o site se relaciona um layout e um site a ele.
+		//o parent id da pagina e o id do layout que e relacionado no cadastro da pagina
+		\$paginas = \$this->getEm()->getRepository ( 'CALLPlugin\Entity\Paginas' )->findOneBy ( array (
+				'url' => \$action,
+				'parentId'=>\$this->config['style']
+		));
+
+		\$date=new \Zend\I18n\View\Helper\DateFormat();
+		// se existir uma pagina carrega o esqueleto da pagina
+		if (\$paginas) {
+			\$this->pagina = \$paginas->getDescription();
+			
+			if (\$repository) {
+				// carregamos os ids dos plugins criados para essa pagina
+				foreach ( \$repository as \$key => \$value ) {
+					\$pagina_items=array();
+					//pega os ids da paginas salva no plugin corrente em formato json
+					//descodifica do formato json para um array
+					\$sites_id = json_decode ( \$value->getPaginasId () );
+					//carrega como false o acesso ao site
+					\$sites_true = FALSE;
+					//verifica se existe paginas
+					if (\$sites_id) :
+						foreach ( \$sites_id as \$key => \$value_sites ) {
+							if (\$value_sites == \$paginas->getId())
+							{
+								\$sites_true = TRUE;
+								\$pagina_items=json_decode(\$value->getPaginasId());
+							}
+						}
+					
+     				endif;
+     			
+					// pega o sql criado no campo param do plugin
+					\$helper = \$value->getQuery ();
+					// verifica se existe paginas pa esse plugin
+					if (\$pagina_items && \$sites_true) {
+						\$html = "";
+						// pega o nome da funçao que usada pelo doctrine para fazer select find, findBy, findOneBy ou findAll
+						\$find = \$value->getSelecionar ();
+						// pega os dados dum array ou dum cart
+						if(\$find=='cart')
+						{
+							\$namespace=\$value->getRota();
+							\$kart=new \$namespace();
+							// carregamos os dados
+							\$service->setRepository (\$kart->cart());
+						}
+						else
+						{	
+						//são algumas informações que variam conforme o site
+						if(\$id)
+						\$id_pesquisa=\$value->getValue().\$id;
+						else
+						\$id_pesquisa="";
+						//\$aFind=array('{id_usuario}','{filtro}');
+						//\$aSubs=array(\$this->user['id'],\$id_pesquisa);
+						
+						\$aFind=explode(',', \$value->getParam());
+						\$aSubs=array(\$this->user['id'],\$id_pesquisa);
+						\$helper=str_replace(\$aFind, \$aSubs, \$helper);
+						\$repository_item = \$this->getEm()->createQuery ( \$helper );
+						
+						if((int)\$value->getLimite()){
+							\$repository_item->setMaxResults(\$value->getLimite());
+						}
+						
+						// carregamos os dados
+						\$service->setRepository ( \$repository_item->getResult());
+						}
+						
+						//seta a class de data do zend intl
+						\$service->setDate(\$date);
+						//seta co o valor do campo value opcional
+						\$service->setAtivo(\$value->getValue());
+						// carregamos a rota 
+						\$service->setRota ( \$this->route );
+						// carregamos a action
+						\$service->setAction ( \$action );
+						// carregamos o param  id
+						\$service->setUrlId ( \$id );
+						//setamos o usuario 
+						\$service->setUser(\$this->user);
+						// carregamos as posicões
+						\$service->setHtml ( "" );
+						// carregamos plugin corrente
+						\$service->setPlugin ( \$value );
+						// setamo o site
+						\$service->setSite ( \$this->config['id'] );
+						// setar o retorno
+						\$service->setRetorno ( \$sites_true );
+						// setar a class de contas
+						\$service->setContas ( \$this->SigaContas () );
+											
+						// verifica se encontrou informacoes cadastrada na tabela corrente
+						if (\$repository_item) :
+						\$html = \$service->\$find ( \$this );
+			            endif;
+						// pega o atalho ou informação que sera substituida pelas informações vindas do banco
+						\$aFind = array (
+								\$value->getAtalho () 
+						);
+						// carrega os dados substituido e pronto
+						\$aSubs = array (
+								\$html 
+						);
+						// substitui os apelidos da paagina pelos dados vindons do banco
+						\$this->pagina = str_replace ( \$aFind, \$aSubs, \$this->pagina );
+						\$html = "";
+					} // /fim do if das paginas item
+					
+				} // fim do foreach do plugin
+			} // /fim do if das plugin
+					
+		} // /fim do if das pagina
+		\$this->pagina=\$service->get_replace_geral(\$this->config,\$this->pagina);
+		//pegamos o arquivo de tradução
+		\$v=require "./data/languageArray/pt_BR.php";
+		//e traduzimos a pagina
+		\$this->pagina=\$service->getTraducao(\$v,\$this->pagina);
+		//e dados do usuario
+		\$this->pagina=\$service->get_replace_geral(\$this->user,\$this->pagina,'_user');
+		\$geral["carrinho"]			=\$this->cart;//usuario
+		\$geral["detalhe"]			=\$this->ZendcabPedidos()->getItem('description');//cabeçalho do pedido
+		\$geral["date"]				=date('d-m-Y');
+		\$geral["total_geral"]		=\$this->ZendcabPedidos()->getItem('valor');//usuario
+		\$geral["frete"]			=\$this->SigaContas()->form_read(\$this->ZendcabPedidos()->getItem('frete'));//usuario
+		\$geral["total_liquido"]		=\$this->SigaContas()->Calcular(\$this->ZendcabPedidos()->getItem('valor'),\$this->ZendcabPedidos()->getItem('frete'),"+");//usuario
+		\$geral["total_qtd"]			=\$this->ZendPedidos ()->Total_items ();
+		if(\$this->user)
+		\$geral["cadastrado_user"]	=\$this->user['created'];
+		\$this->pagina=\$service->get_replace_geral(\$geral,\$this->pagina,'');
+		
+		\$view = new ViewModel ( array ('pagina' => \$this->pagina ) );
+		\$this->layout ( \$this->layout_template );
+		\$view->setTemplate ( \$this->templete );
+		\$view->setTerminal ( \$this->terminal );
+		return \$view;
+	}
+	
+	public function ${2}Action() {
+		// setamos o templete
+		return \$this->indexAction ();
+	}
+	
+	public function contatoAction() {
+		\$this->action='contato';
+		// setamos o templete
+		return \$this->indexAction ();
+	}
+	public function produtoAction() {
+		\$this->action='produto';
+		// setamos o templete
+		return \$this->indexAction ();
 	}
 
-
-	protected function getForm()
+	public function produtoitemAction() {
+		\$this->action='produto-item';
+		// setamos o templete
+		return \$this->indexAction ();
+	}
+	
+	public function estoqueAction() {
+		\$this->action='estoque';
+		// setamos o templete
+		return \$this->indexAction ();
+	}
+	
+	
+	public function sairAction()
 	{
-		if (is_string(\$this->form))
-			return   \$this->getServiceLocator()->get('FormElementManager')->get(\$this->form);
-		else
-			return  \$this->form;
+		\$this->ZendPedidos()->destroy();
+		\$this->ZendCabPedidos()->destroy();
+		return \$this->redirect()->toRoute('${2}-auth',array('action'=>'logout'));
 	}
 
-	public function getAuthService()
-	{
-		\$this->authservice = new AuthenticationService();
-		//se existir um usuario logado carrgamos a sessao
-		\$this->authservice->setStorage(new SessionStorage(\$this->sessao_usuario));
-		//carregamos a variavel user com os dados do usuario
-		\$this->user=\$this->authservice->getStorage()->read();
+	
 
-		return \$this->authservice;
-
-	}
-
-	public function getEm()
-	 {
-		\$this->em = \$this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
-		return \$this->em;
+	public function alterarsenhaAction() {
+		
+		\$request=\$this->getRequest();
+		if(\$request->isPost())
+		{
+			
+			\$servico=\$this->getServiceLocator()->get('CALLCliente\Service\ClienteService');
+			\$result=\$servico->alterarsenha("password","id",\$request->getPost("senha"),\$this->user['id']);
+			if(\$result)
+			{
+				\$this->messages ()->flashSuccess ( "Senha atualizada com sucesso!!" );
+			}
+			else{
+				\$this->messages ()->flashError ( "Não foi possivel concluir a solicitação, tente novamente!!" );
+			}
 		}
 
-
-	public function printAll(\$erro,\$stop=TRUE)
-	{
-		echo "<PRE>";
-		print_r(\$erro);
-		echo "</PRE>";
-		if(\$stop)
-			exit();
+		// setamos o templete
+		return \$this->redirect ()->toRoute ( '${2}' );
 	}
 
+
+	public function getConfig(\$site = '') {
+		// pegamos os dados da empresa pelo a empresa que o usuario esta cadastrado
+		\$service = \$this->getEm ()->getRepository ( "CALLSites\Entity\SitesList" );
+		
+		if(\$this->ZenCache()->Rcache("configurado_${2}"))
+		{
+			//salvamos na var config
+			\$this->config=\$this->ZenCache()->Rcache("configurado_${2}");
+				
+		}
+		else
+		{
+		\$this->ZenCache()->removeItem("configurado_${2}");
+		// salvamos na var config
+		\$config = \$service->findOneBy ( array (
+				'site' => \$site 
+		) );
+				
+			if(\$config):
+			foreach (\$config->toArray() as \$key => \$value) {
+		
+				if(\$value instanceof \Datetime)
+					\$this->config[\$key]=\$value->format("Y/m/d");
+				else
+					\$this->config[\$key]=\$value;
+		
+			}
+				
+			foreach (\$config->getAddressCity()->toArray() as \$key => \$value) {
+		
+				if(\$value instanceof \Datetime){
+					\$this->config[\$key]=\$value->format("Y/m/d");}
+					else{
+						if(\$key!="id")
+							\$this->config[\$key]=\$value;
+					if(\$key=="description")
+							\$this->config["city"]=\$value;
+					}
+		
+			}
+			\$this->ZenCache()->Wcache("configurado_${2}",\$this->config);
+			endif;
+		}
+		return \$this->config;
+		
+	}
+	protected function getForm() {
+		if (is_string ( \$this->form ))
+			return \$this->getServiceLocator ()->get ( 'FormElementManager' )->get ( \$this->form );
+		else
+			return \$this->form;
+	}
+	public function getAuthService() {
+		\$this->authservice = new AuthenticationService ();
+		// se existir um usuario logado carrgamos a sessao
+		\$this->authservice->setStorage ( new SessionStorage ( \$this->sessao_usuario ) );
+		// carregamos a variavel user com os dados do usuario
+		\$this->user = \$this->authservice->getStorage ()->read ();
+		return \$this->user;
+	}
+	public function getEm() {
+		\$this->em = \$this->getServiceLocator ()->get ( "Doctrine\ORM\EntityManager" );
+		return \$this->em;
+	}
+	public function printAll(\$erro, \$stop = TRUE) {
+		echo "<PRE>";
+		print_r ( \$erro );
+		echo "</PRE>";
+		if (\$stop)
+			exit ();
+	}
 }
+
+
 
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->

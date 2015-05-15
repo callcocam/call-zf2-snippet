@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+		  \$repo_parent =  \$em->getRepository('CALL${1:Namespace}\Entity\\${2:Class}');
+          \$parent_${3:rota} = \$repo_parent->fetchParent('${3}');
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-get-fetchparent</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,45 @@
+<snippet>
+	<content><![CDATA[
+<?php
+namespace ${1:Packpge}\Controller;
+
+use Base\Controller\AbstractController;
+use Zend\View\Model\ViewModel;
+
+class AgendaController extends AbstractController
+{
+
+    public function __construct() {
+        \$this->entity = 'CALLAgenda\Entity\Agenda';
+        \$this->service = 'CALLAgenda\Service\AgendaService';
+        \$this->form = 'CALLAgenda\Form\AgendaForm';
+        \$this->controller = "${2:rota}-agenda";
+        \$this->route = "${2:rota}-agenda";
+        \$this->templete="/call-agenda/index/index";
+        \$this->action=array('action'=>'index');
+    }
+
+    public function indexAction()
+    {
+        //setamos o templete
+        \$this->templete="/call-agenda/index/index";
+        return parent::listarAction();
+    }
+    public function inserirAction()
+    {   \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-agenda/index/editar";
+        return parent::inserirAction();
+    }
+    public function editarAction()
+    {
+        \$this->action=array('action'=>"inserir");
+        \$this->templete="/call-agenda/index/editar";
+        return parent::editarAction();
+    }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-controller-agenda</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

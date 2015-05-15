@@ -1,0 +1,341 @@
+<snippet>
+	<content><![CDATA[
+<?php
+
+namespace CALL${1:Packpage}\Service;
+
+use Base\Service\AbstractService;
+use Doctrine\ORM\EntityManager;
+use Zend\I18n\View\Helper\DateFormat;
+
+class ${1}Service extends AbstractService {
+	public function __construct(EntityManager \$em) {
+		\$this->entity = "CALL${1}\Entity\Home";
+		parent::__construct ( \$em );
+	}
+	protected \$id;
+	protected \$url_id;
+	protected \$user;
+	protected \$retorno = true;
+	protected \$site;
+	protected \$rota;
+	protected \$action;
+	protected \$url;
+	protected \$plugin = array ();
+	protected \$aFind = array ();
+	protected \$aSubs = array ();
+	protected \$ativo;
+	protected \$data = array ();
+	protected \$pagina;
+	protected \$html;
+	protected \$contas;
+	protected \$state = "";
+	protected \$date = null;
+	protected \$i = 0;
+	public function setId(\$id) {
+		\$this->id = \$id;
+		return \$this;
+	}
+	public function getId() {
+		return \$this->id;
+	}
+	public function setUrlId(\$url_id) {
+		\$this->url_id = \$url_id;
+		return \$this;
+	}
+	public function getUrl_Id() {
+		return \$this->url_id;
+	}
+	public function setUser(\$user) {
+		\$this->user = \$user;
+		return \$this;
+	}
+	public function getUser() {
+		return \$this->user;
+	}
+	public function setContas(\$contas) {
+		\$this->contas = \$contas;
+		return \$this;
+	}
+	public function getContas() {
+		return \$this->contas;
+	}
+	public function setRetorno(\$retorno) {
+		\$this->retorno = \$retorno;
+		return \$this;
+	}
+	public function getRetorno() {
+		return \$this->retorno;
+	}
+	public function setSite(\$site) {
+		\$this->site = \$site;
+		return \$this;
+	}
+	public function getSite() {
+		return \$this->site;
+	}
+	public function setRota(\$rota) {
+		\$this->rota = \$rota;
+		return \$this;
+	}
+	public function getRota() {
+		return \$this->rota;
+	}
+	public function setAction(\$action) {
+		\$this->action = \$action;
+		return \$this;
+	}
+	public function getAction() {
+		return \$this->action;
+	}
+	public function setUrl(\$url) {
+		\$this->url = \$url;
+		return \$this;
+	}
+	public function getUrl() {
+		return \$this->url;
+	}
+	public function setPlugin(\$plugin) {
+		\$this->plugin = \$plugin;
+		return \$this;
+	}
+	public function getPlugin() {
+		return \$this->plugin;
+	}
+	public function setAFind(\$key, \$aFind) {
+		\$this->aFind [\$key] = \$aFind;
+		return \$this;
+	}
+	public function getAFind() {
+		return \$this->aFind;
+	}
+	public function setASubs(\$key, \$aSubs) {
+		\$this->aSubs [\$key] = \$aSubs;
+		return \$this;
+	}
+	public function getASubs() {
+		return \$this->aSubs;
+	}
+	public function setAtivo(\$ativo) {
+		\$this->ativo = \$ativo;
+	}
+	public function getAtivo() {
+		return \$this->ativo;
+	}
+	public function setRepository(\$repository) {
+		\$this->repository = \$repository;
+		return \$this;
+	}
+	public function getRepository() {
+		return \$this->repository;
+	}
+	public function setData(\$data) {
+		\$this->data = \$data;
+		return \$this;
+	}
+	public function getData() {
+		return \$this->data;
+	}
+	public function setPagina(\$pagina) {
+		\$this->pagina = \$pagina;
+		return \$this;
+	}
+	public function getPagina() {
+		return \$this->pagina;
+	}
+	public function setHtml(\$html) {
+		\$this->html = \$html;
+		return \$this;
+	}
+	public function getHtml() {
+		return \$this->html;
+	}
+	public function setDate(\$date) {
+		\$this->date = \$date;
+		return \$this;
+	}
+	public function getDate() {
+		return \$this->date;
+	}
+	public function findBy(\$_this) {
+		\$repository = \$this->getRepository ();
+		\$data = array ();
+		\$this->setHtml ( "" );
+		foreach ( \$repository as \$key => \$value_item ) {
+			foreach ( \$value_item as \$key_item => \$value_sub_item ) {
+				
+				if (\$value_sub_item instanceof \Datetime)
+					\$data [\$key_item] = \$value_sub_item->format ( "d-m-Y" );
+				else
+					\$data [\$key_item] = \$value_sub_item;
+			}
+			
+			\$data = \$this->getContas ()->Convert_float ( \$data );
+			\$this->setId ( \$value_item ['id'] );
+			if (isset ( \$data ['url'] )) {
+				\$this->setUrl ( \$value_item ['url'] );
+			}
+			\$this->setData ( \$this->tratamento ( \$_this, \$data ) );
+			\$this->setHtml ( \$this->getHtml () . \$this->get_replace_items () );
+		}
+		// var_dump(\$_this->ZendPedidos()->cart());
+		\$this->setHtml ( \$this->get_replace_row () );
+		\$this->setData ( array () );
+		return \$this->getHtml ();
+	}
+	public function cart(\$_this) {
+		if (\$this->getRepository ())
+			return \$this->findBy ( \$_this );
+		else
+			return '<div class="row"><div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+				</div><div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+				<img src="/images/empty_cart.png" class="img-responsive" alt="Image"/>
+				</div>
+				<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div></div>';
+	}
+	public function findOneBy(\$_this) {
+		\$data = array ();
+		\$this->setHtml ( "" );
+		\$repository = \$this->getRepository ();
+		// pegamos a pagina pelo action da url e pelo style ou id do layout
+		// quando e criado uma cofiguração para o site se relaciona um layout e um site a ele.
+		// o parent id da pagina e o id do layout que e relacionado no cadastro da pagina
+		\$transform = function (\$item) {
+			return \$item;
+		};
+		\$repository = array_map ( \$transform, \$repository [0] );
+		foreach ( \$repository as \$key => \$value_sub_item ) {
+			if (\$value_sub_item instanceof \Datetime)
+				\$data [\$key] = \$value_sub_item->format ( "d-m-Y" );
+			else
+				\$data [\$key] = \$value_sub_item;
+		}
+		\$data = \$this->getContas ()->Convert_float ( \$data );
+		
+		\$this->setId ( \$repository ['id'] );
+		if (isset ( \$data ['url'] )) {
+			\$this->setUrl ( \$repository ['url'] );
+		}
+		\$this->setData ( \$this->tratamento ( \$_this, \$data ) );
+		\$this->setHtml ( \$this->get_replace_items () );
+		\$this->setHtml ( \$this->get_replace_row () );
+		\$this->setData ( array () );
+		return \$this->getHtml ();
+	}
+	public function tratamento(\$_this, \$data) {
+		\$this->i ++;
+		if (isset ( \$data ['site'] )) {
+			\$this->retorno = false;
+			foreach ( json_decode ( \$data ['site'] ) as \$value_id_site ) {
+				if (\$value_id_site == \$this->getSite ())
+					\$this->retorno = true;
+			}
+		}
+		
+		if (isset ( \$data ['created'] )) {
+			
+			// Instanciando o Date Format do Zend para pegar o timezone atual
+			\$date = \$this->getDate ();
+			
+			// Pega o timezone para usarmos nos exemplos abaixo
+			\$timeZone = \$date->getTimezone ();
+			
+			// Exemplo de como pegar o nome do locale
+			\$locale = \$date->getlocale ();
+			
+			\$date = new \DateTime ( \$this->getContas ()->form_convdata ( \$data ['created'], "-" ), new \DateTimeZone ( \$date->getTimezone () ) );
+			
+			\$data ['dia'] = \$date->format ( "d" );
+			\$data ['mes'] = \$date->format ( "M" );
+			\$data ['ano'] = \$date->format ( "Y" );
+		}
+		\$data ['last'] = "1";
+		if (\$this->i >=  \$this->getPlugin ()->getLimite()) {
+			\$data ['last'] = "2";
+			\$this->i = 0;
+		}
+		
+		
+		if (isset ( \$data ['id'] ))
+			\$data ['id'] = str_pad ( \$data ['id'], 8, "0", STR_PAD_LEFT );
+		
+		if (isset ( \$data ['nota'] ))
+			\$data ['nota'] = str_pad ( \$data ['nota'], 8, "0", STR_PAD_LEFT );
+		
+		\$data ['ativo'] = \$this->getUrl () == \$this->getAction () ? "active" : "";
+		
+		if (isset ( \$data ['video'] )) {
+			// verifica se o data video não esta vasio
+			if (! empty ( \$data ['video'] )) {
+				// instancia a classe que trata o a url do video
+				\$youtubeDetails = \$_this->YoutubePlugin ();
+				// pega a imagem do video
+				\$video_img = \$youtubeDetails->getImages ( \$data ['video'] );
+				// carrega na data thumbnal
+				\$data ['thumbnal'] = \$video_img ['small'];
+				// pega o caminho do embed do video
+				\$data ['embed'] = \$youtubeDetails->getEmbed ( \$data ['video'] );
+			}
+		}
+		
+		return \$data;
+	}
+	public function get_replace_items() {
+		foreach ( \$this->getData () as \$key => \$value ) {
+			if (is_object ( \$value )) {
+				// \$this->setASubs(\$key,\$value->getTitle());
+			} else {
+				\$this->setASubs ( \$key, \$value );
+				\$this->setAFind ( \$key, "{" . \$key . "}" );
+			}
+		}
+		
+		if (\$this->retorno) {
+			return str_replace ( \$this->getAFind (), \$this->getASubs (), \$this->getPlugin ()->getLinha () );
+		} else {
+			return "";
+		}
+	}
+	public function get_replace_row() {
+		// pega o atalho ou informação que sera substituida pelas informações vindas do banco
+		\$aFind = array (
+				\$this->getPlugin ()->getAtalho () 
+		);
+		// carrega os dados substituido e pronto
+		\$aSubs = array (
+				\$this->getHtml () 
+		);
+		// substitui os apelidos da paagina pelos dados vindons do banco
+		return str_replace ( \$aFind, \$aSubs, \$this->getPlugin ()->getDescription () );
+	}
+	public function getTraducao(\$data = array(), \$pagina = "") {
+		foreach ( \$data as \$key => \$value ) {
+			\$this->setASubs ( \$key, \$value );
+			\$this->setAFind ( \$key, \$key );
+		}
+		return str_replace ( \$this->getAFind (), \$this->getASubs (), \$pagina );
+	}
+	public function get_replace_geral(\$data = array(), \$pagina = "", \$posfix = "") {
+		if (\$data) {
+			foreach ( \$data as \$key => \$value ) {
+				if (is_array ( \$value )) {
+					foreach ( \$value as \$key_v => \$value_v ) {
+						\$this->setASubs ( \$key_v, \$value_v );
+						\$this->setAFind ( \$key_v, "{" . \$key_v . \$posfix . "}" );
+					}
+					// \$this->setASubs(\$key,\$value->getTitle());
+				} else {
+					\$this->setASubs ( \$key, \$value );
+					\$this->setAFind ( \$key, "{" . \$key . \$posfix . "}" );
+				}
+			}
+		}
+		return str_replace ( \$this->getAFind (), \$this->getASubs (), \$pagina );
+	}
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-service-principal</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
