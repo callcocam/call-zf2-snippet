@@ -10,21 +10,28 @@ class ${2:_SUBPACKAGE_}Controller extends AbstractController
 {
 
     public function __construct() {
-        \$this->entity = '${3:Namespace}\Entity\\${4:class}';
-        \$this->service = '${3}\Service\\${4}Service';
-        \$this->form = '${3}\Form\\${4}Form';
-        \$this->controller = "${5:rota}";
-        \$this->route = "${5}";
-        \$this->templete="/call-${6:view}/index/index";
+        \$this->entity      = 'Base\Entity\\${4:class}';
+        \$this->service     = '${3:Namespace}\Service\\${4}Service';
+        \$this->form        = '${3}\Form\\${4}Form';
+        \$this->controller  = "${5:rota}";
+        \$this->route       = "${5}";
+        \$this->templete    ="/call-${6:view}/index/listar";
         \$this->action=array('action'=>'index');
     }
 
     public function indexAction()
     {
         //setamos o templete
-        \$this->templete="/call-${6}/index/index";
+        \$this->templete="/call-${6}/index/listar";
         return parent::listarAction();
     }
+    public function cancelarAction()
+        {
+            \$this->messages()->error(' Operação foi cancelado com sucesso!');
+            //setamos o templete
+            \$this->templete="/call-${6}/index/listar";
+            return parent::listarAction();
+        }
     public function inserirAction()
     {   \$this->action=array('action'=>"inserir");
         \$this->templete="/call-${6}/index/editar";
@@ -36,15 +43,7 @@ class ${2:_SUBPACKAGE_}Controller extends AbstractController
         \$this->templete="/call-${6}/index/editar";
         return parent::editarAction();
     }
-    public function listadirAction()
-    {
-        \$view=new ViewModel(array('dir' => \$this->route,'contas'=>\$this->SigaContas(),'usuario'=>\$this->user));
-        //setamos o templete
-        \$view->setTemplate("/call-midia/index/listadir");
-        \$view->setTerminal(true);
-        return \$view;
-
-    }
+   
 }
 ]]></content>
     <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->

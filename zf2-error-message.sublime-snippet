@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+\$this->messages()->flashError('${1:Your error message here}');
+//\$this->messages()->error('${1}');
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-error-message</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

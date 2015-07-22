@@ -1,0 +1,103 @@
+<snippet>
+	<content><![CDATA[
+ /**
+     * Set created
+     *
+     * @param \DateTime \$created
+     *
+     * @return ${1:Tabela}
+     */
+    public function setCreated(\$created)
+    {
+       \$this->created= new \DateTime(\$created);
+    
+        return \$this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated(\$format="d-m-Y")
+    {
+        return \$this->created->format(\$format);
+    }
+
+    /**
+     * Set modified
+     *
+     * @param \DateTime \$modified
+     *
+     * @return ${1}
+     */
+    public function setModified(\$modified)
+    {
+        \$this->modified = new \DateTime(\$modified);
+    
+        return \$this;
+    }
+
+    /**
+     * Get modified
+     *
+     * @return \DateTime
+     */
+    public function getModified(\$format="d-m-Y H:i:s")
+    {
+        return \$this->modified->format(\$format);
+    }
+
+    /**
+     * Set publishUp
+     *
+     * @param \DateTime \$publishUp
+     *
+     * @return ${1}
+     */
+    public function setPublishUp(\$publishUp)
+    {
+        \$this->publishUp = new \DateTime(\$publishUp);
+    
+        return \$this;
+    }
+
+    /**
+     * Get publishUp
+     *
+     * @return \DateTime
+     */
+    public function getPublishUp(\$format="d-m-Y H:i:s")
+    {
+        return \$this->publishUp->format(\$format);
+    }
+
+    /**
+     * Set publishDown
+     *
+     * @param \DateTime \$publishDown
+     *
+     * @return ${1}
+     */
+    public function setPublishDown(\$publishDown)
+    {
+        \$this->publishDown = new \DateTime(\$publishDown);
+    
+        return \$this;
+    }
+
+    /**
+     * Get publishDown
+     *
+     * @return \DateTime
+     */
+    public function getPublishDown(\$format="d-m-Y H:i:s")
+    {
+        return \$this->publishDown->format(\$format);
+    }
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-trata-datetime</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+\$this->ZenCache()->removeItem("${1:cache}");
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zf2-removeItem-cache</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -52,7 +52,7 @@ class Module
                              '${2}Helper' => function (\$sm) {
                                         \$locator = \$sm->getServiceLocator();
                                         \$em = \$locator->get('Doctrine\ORM\EntityManager');
-                                        return new View\Helper\${2}Helper(\$em);
+                                        return new View\Helper\\${2}Helper(\$em);
                                         }
 
                         ),
